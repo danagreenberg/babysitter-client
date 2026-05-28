@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סיכום משמרת – babysitter</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', Arial, sans-serif;
+    direction: rtl;
+    background: #fdf8fb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── NAVBAR ── */
+  .navbar {
+    background: white; border-bottom: 1px solid #f0e8ed;
+    padding: 0 32px; height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 8px rgba(180,80,130,0.08);
+    flex-shrink: 0; gap: 16px; position: sticky; top: 0; z-index: 1000;
+  }
+  .logo {
+    font-size: 22px; font-weight: 900; color: #c4557a;
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none; flex-shrink: 0;
+  }
+  .nav-links { display: flex; gap: 4px; align-items: center; flex: 1; justify-content: center; }
+  .nav-link {
+    font-size: 13px; font-weight: 600; color: #aaa;
+    text-decoration: none; padding: 7px 14px;
+    border-radius: 10px; transition: all 0.18s; white-space: nowrap;
+  }
+  .nav-link:hover { color: #c4557a; background: #fde8f2; }
+  .nav-link.active { color: #c4557a; background: #fde8f2; font-weight: 700; }
+  .nav-right { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
+  .nav-icon {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 2px; color: #aaa; font-size: 11px; font-weight: 600;
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-icon span:first-child { font-size: 20px; }
+  .nav-icon:hover { color: #c4557a; }
+
+  /* ── PAGE LAYOUT ── */
+  .page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+  }
+
+  /* ── MAIN CARD ── */
+  .summary-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 4px 32px rgba(180,80,130,0.1);
+    width: 100%;
+    max-width: 680px;
+    overflow: hidden;
+  }
+
+  /* Card header */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 28px;
+    border-bottom: 1px solid #f5edf2;
+  }
+
+  .back-btn {
+    font-size: 22px; color: #bbb; cursor: pointer;
+    background: none; border: none; line-height: 1;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: #c4557a; }
+
+  .card-title { font-size: 20px; font-weight: 800; color: #222; }
+
+  /* Card body – two columns */
+  .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  /* Left col: sitter info + shift details */
+  .col-left {
+    padding: 28px 28px 28px 28px;
+    border-left: 1px solid #f5edf2;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  /* Right col: payment */
+  .col-right {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  /* Sitter row */
+  .sitter-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .sitter-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f5edf2;
+    background: #f5e0ea;
+    flex-shrink: 0;
+  }
+
+  .sitter-sub { font-size: 13px; color: #bbb; margin-bottom: 4px; }
+  .sitter-name { font-size: 22px; font-weight: 900; color: #222; }
+
+  /* Details box */
+  .details-box {
+    background: #fdf8fb;
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+
+  .details-title {
+    font-size: 14px; font-weight: 700; color: #333; margin-bottom: 12px;
+  }
+
+  .detail-row {
+    display: flex; gap: 8px; font-size: 14px; color: #555;
+    margin-bottom: 7px; align-items: center;
+  }
+  .detail-row:last-child { margin-bottom: 0; }
+  .detail-lbl { font-weight: 700; color: #333; min-width: 90px; }
+
+  /* Total */
+  .total-box {
+    background: linear-gradient(135deg, #fde8f2, #fdf0f8);
+    border-radius: 14px;
+    padding: 18px 20px;
+    text-align: center;
+  }
+  .total-label { font-size: 14px; color: #aaa; margin-bottom: 6px; }
+  .total-amount { font-size: 32px; font-weight: 900; color: #c4557a; }
+
+  /* Payment section */
+  .pay-title {
+    font-size: 16px; font-weight: 700; color: #333; text-align: center;
+  }
+
+  .pay-btns { display: flex; flex-direction: column; gap: 10px; }
+
+  .pay-btn {
+    background: #d4eaf8; color: #1a5f8a;
+    border: none; border-radius: 12px; padding: 14px;
+    font-size: 15px; font-weight: 700; font-family: inherit;
+    cursor: pointer; transition: background 0.2s; width: 100%;
+  }
+  .pay-btn:hover { background: #b8d8f0; }
+
+  /* Footer */
+  .card-footer {
+    border-top: 1px solid #f5edf2;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    font-size: 14px;
+    color: #bbb;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .card-footer:hover { color: #c4557a; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: #3a1f30; color: white; padding: 11px 26px;
+    border-radius: 20px; font-size: 14px; font-weight: 600;
+    z-index: 9999; display: none; font-family: inherit;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" href="family-search.html">🍼 babysitter</a>
+  <div class="nav-links">
+    <a class="nav-link " href="family-search.html">🔍 חיפוש</a>
+    <a class="nav-link " href="active-shift.html">⏱️ משמרת פעילה</a>
+    <a class="nav-link active" href="shift-summary.html">💳 סיכום משמרת</a>
+    <a class="nav-link " href="register.html">📝 הרשמה</a>
+  </div>
+  <div class="nav-right">
+    <a class="nav-icon" href="#"><span>💬</span><span>הודעות</span></a>
+    <a class="nav-icon" href="register.html"><span>👤</span><span>פרופיל</span></a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+  <div class="summary-card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <button class="back-btn" onclick="history.back()">‹</button>
+      <div class="card-title">סיכום משמרת</div>
+    </div>
+
+    <!-- Two columns -->
+    <div class="card-body">
+
+      <!-- LEFT: info -->
+      <div class="col-left">
+
+        <!-- Sitter -->
+        <div class="sitter-row">
+          <img class="sitter-avatar"
+               src="https://i.pravatar.cc/150?img=47"
+               alt="דנה"
+               onerror="this.src='https://i.pravatar.cc/150?img=1'">
+          <div>
+            <div class="sitter-sub" id="sitterSub">בייביסיטר עם דנה</div>
+            <div class="sitter-name">דנה</div>
+          </div>
+        </div>
+
+        <!-- Shift details -->
+        <div class="details-box">
+          <div class="details-title">פרטי משמרת:</div>
+          <div class="detail-row"><span class="detail-lbl">התחלה:</span> <span id="shiftStart">9:00</span></div>
+          <div class="detail-row"><span class="detail-lbl">סיום:</span> <span id="shiftEnd">12:00</span></div>
+          <div class="detail-row"><span class="detail-lbl">סך הכל זמן:</span> <span id="shiftHours">3 שעות</span></div>
+          <div class="detail-row"><span class="detail-lbl">תעריף:</span> <span id="shiftRate">₪60/שעה</span></div>
+        </div>
+
+        <!-- Total -->
+        <div class="total-box">
+          <div class="total-label">סך הכל לתשלום</div>
+          <div class="total-amount" id="shiftTotal">₪180</div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: payment -->
+      <div class="col-right">
+
+        <div class="pay-title">איך תרצי לשלם?</div>
+
+        <div class="pay-btns">
+          <button class="pay-btn" onclick="pay('Bit')">💙 שלם בביט</button>
+          <button class="pay-btn" onclick="pay('Paybox')">💜 שלם בפייבוקס</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer" onclick="goNext()">
+      ‹ שילמתי, המשך לדירוג
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const shiftData = { sitterName:"דנה", startTime:"9:00", endTime:"12:00", hours:3, rate:60, total:180 };
+
+function pay(method) {
+  showToast(`✅ מועבר לתשלום ב-${method}...`);
+  console.log('תשלום:', { method, amount: shiftData.total });
+}
+
+function goNext() {
+  showToast('⭐ מעבר לדירוג...');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => { t.style.display = 'none'; }, 2500);
+}
+</script>
+<script src="js/shift-summary.js"></script>
+</body>
+</html>

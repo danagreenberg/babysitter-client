@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הרשמה – babysitter</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', Arial, sans-serif;
+    direction: rtl;
+    background: #fdf8fb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── NAVBAR ── */
+  .navbar {
+    background: white;
+    border-bottom: 1px solid #f0e8ed;
+    padding: 0 40px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 6px rgba(180,80,130,0.07);
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-size: 22px;
+    font-weight: 800;
+    color: #c4557a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+
+  .nav-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: #bbb;
+    text-decoration: none;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: #c4557a; }
+  .nav-link.active { color: #c4557a; border-bottom-color: #c4557a; }
+
+  /* ── PAGE ── */
+  .page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 4px 32px rgba(180,80,130,0.1);
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+  }
+
+  /* ── ROLE TABS ── */
+  .role-tabs {
+    display: flex;
+    border-bottom: 1px solid #f5edf2;
+  }
+
+  .role-tab {
+    flex: 1;
+    padding: 18px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #bbb;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    background: white;
+    border: none;
+    font-family: inherit;
+  }
+
+  .role-tab:first-child { border-left: 1px solid #f5edf2; }
+
+  .role-tab.active {
+    color: #c4557a;
+    border-bottom: 3px solid #c4557a;
+    background: #fff8fb;
+  }
+
+  .role-tab:hover:not(.active) { color: #c4557a; background: #fff8fb; }
+
+  /* ── FORM BODY ── */
+  .form-body {
+    padding: 32px 36px 36px;
+  }
+
+  .form-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #333;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .form-grid .full { grid-column: 1 / -1; }
+
+  /* Input */
+  .fi {
+    width: 100%;
+    background: #fdf0f7;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #444;
+    text-align: right;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .fi::placeholder { color: #cbb4c4; }
+  .fi:focus { border-color: #e8b4ca; background: white; }
+  .fi.err { border-color: #f0a0a0; background: #fff8f8; }
+  .fi.ok  { border-color: #a8d8b0; }
+
+  .ferr {
+    font-size: 12px;
+    color: #d06060;
+    margin-top: 4px;
+    display: none;
+  }
+  .ferr.show { display: block; }
+
+  /* Textarea */
+  textarea.fi {
+    resize: none;
+    height: 90px;
+    line-height: 1.5;
+  }
+
+  /* Counter */
+  .counter-wrap {
+    background: #fdf0f7;
+    border-radius: 12px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .counter-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .counter-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .cbtn {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: none;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s;
+  }
+
+  .cbtn-minus { background: #f0c0d8; color: white; }
+  .cbtn-minus:hover { background: #e090b8; }
+  .cbtn-plus  { background: #c4557a; color: white; }
+  .cbtn-plus:hover  { background: #a83d62; }
+
+  .cnum {
+    font-size: 17px;
+    font-weight: 800;
+    color: #333;
+    min-width: 22px;
+    text-align: center;
+  }
+
+  /* Select */
+  .fselect-wrap { position: relative; }
+  .fselect {
+    width: 100%;
+    background: #fdf0f7;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #555;
+    text-align: right;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .fselect:focus { border-color: #e8b4ca; background: white; }
+  .fselect-arrow {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: #cbb4c4;
+    pointer-events: none;
+  }
+
+  /* Submit */
+  .btn-submit {
+    width: 100%;
+    background: #e091b0;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: #c4557a; }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* Success */
+  .success-msg {
+    background: #edf7ee;
+    color: #3a8a50;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    display: none;
+    margin-top: 12px;
+  }
+
+  .global-err {
+    background: #fff0f0;
+    color: #d06060;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+    margin-top: 8px;
+  }
+
+  /* Divider */
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #d4a0b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 4px 0 2px;
+    grid-column: 1 / -1;
+  }
+
+  /* Login link */
+  .login-link {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: #aaa;
+  }
+  .login-link a { color: #c4557a; font-weight: 700; text-decoration: none; }
+  .login-link a:hover { text-decoration: underline; }
+
+  /* Sitter-only fields */
+  #sitterFields { display: none; }
+  #sitterFields.show { display: contents; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" href="family-search.html">🍼 babysitter</a>
+  <div class="nav-links">
+    <a class="nav-link " href="family-search.html">🔍 חיפוש</a>
+    <a class="nav-link " href="active-shift.html">⏱️ משמרת פעילה</a>
+    <a class="nav-link " href="shift-summary.html">💳 סיכום משמרת</a>
+    <a class="nav-link active" href="register.html">📝 הרשמה</a>
+  </div>
+  <div class="nav-right">
+    <a class="nav-icon" href="#"><span>💬</span><span>הודעות</span></a>
+    <a class="nav-icon" href="register.html"><span>👤</span><span>פרופיל</span></a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+  <div class="card">
+
+    <!-- Role tabs -->
+    <div class="role-tabs">
+      <button class="role-tab active" id="tab-family" onclick="setRole('family')">
+        👨‍👩‍👧 הרשמה כמשפחה
+      </button>
+      <button class="role-tab" id="tab-sitter" onclick="setRole('sitter')">
+        👶 הרשמה כבייביסיטר
+      </button>
+    </div>
+
+    <!-- Form -->
+    <div class="form-body">
+      <div class="form-title" id="formTitle">הרשמה</div>
+
+      <form id="regForm" novalidate>
+        <div class="form-grid">
+
+          <!-- פרטים אישיים -->
+          <div class="section-label">פרטים אישיים</div>
+
+          <div>
+            <input class="fi" type="text" id="fullName" placeholder="שם מלא" oninput="vf('fullName')">
+            <div class="ferr" id="fullName-e">אנא הכנס/י שם מלא</div>
+          </div>
+
+          <div>
+            <input class="fi" type="tel" id="phone" placeholder="טלפון נייד" maxlength="11" oninput="fmtPhone(this);vf('phone')">
+            <div class="ferr" id="phone-e">מספר לא תקין</div>
+          </div>
+
+          <div class="full">
+            <input class="fi" type="email" id="email" placeholder="כתובת אימייל" oninput="vf('email')">
+            <div class="ferr" id="email-e">אימייל לא תקין</div>
+          </div>
+
+          <div class="full">
+            <input class="fi" type="text" id="address" placeholder="כתובת מגורים" oninput="vf('address')">
+            <div class="ferr" id="address-e">אנא הכנס/י כתובת</div>
+          </div>
+
+          <!-- Family only -->
+          <div class="full" id="familyFields">
+            <div class="counter-wrap">
+              <span class="counter-label">מספר ילדים:</span>
+              <div class="counter-controls">
+                <button type="button" class="cbtn cbtn-minus" onclick="changeCount(-1)">−</button>
+                <span class="cnum" id="childCount">3</span>
+                <button type="button" class="cbtn cbtn-plus" onclick="changeCount(1)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sitter only -->
+          <div id="sitterFields">
+            <div class="section-label" style="grid-column:1/-1;">פרטי הבייביסיטר</div>
+
+            <div>
+              <input class="fi" type="date" id="birthdate" oninput="vf('birthdate')">
+              <div class="ferr" id="birthdate-e">יש להיות בגיל 16+</div>
+            </div>
+
+            <div class="fselect-wrap">
+              <select class="fselect" id="experience" onchange="vf('experience')">
+                <option value="">שנות ניסיון</option>
+                <option value="0">ללא ניסיון</option>
+                <option value="1">שנה אחת</option>
+                <option value="2">2–3 שנים</option>
+                <option value="4">4–6 שנים</option>
+                <option value="7">7+ שנים</option>
+              </select>
+              <span class="fselect-arrow">▼</span>
+            </div>
+
+            <div class="fselect-wrap">
+              <select class="fselect" id="area" onchange="vf('area')">
+                <option value="">אזור פעילות</option>
+                <option value="ta">תל אביב</option>
+                <option value="gd">גוש דן</option>
+                <option value="jer">ירושלים</option>
+                <option value="hfa">חיפה והצפון</option>
+                <option value="sth">הדרום</option>
+              </select>
+              <span class="fselect-arrow">▼</span>
+            </div>
+
+            <div>
+              <input class="fi" type="number" id="rate" placeholder="תעריף לשעה (₪)" min="30" max="200" oninput="vf('rate')">
+              <div class="ferr" id="rate-e">אנא הכנס/י תעריף</div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="full">
+            <textarea class="fi" id="notes" placeholder="הערות מיוחדות (אלרגיות, בקשות..)"></textarea>
+          </div>
+
+          <!-- Submit -->
+          <div class="full">
+            <button type="submit" class="btn-submit" id="submitBtn">סיום הרשמה</button>
+            <div class="global-err" id="globalErr">אנא מלא/י את כל השדות הנדרשים</div>
+            <div class="success-msg" id="successMsg">🎉 נרשמת בהצלחה! ברוך הבא ל-babysitter</div>
+          </div>
+
+        </div>
+      </form>
+
+      <div class="login-link">כבר רשום/ה? <a href="#">התחבר/י</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let role = 'family';
+let childCount = 3;
+
+// ── Role switch ──
+function setRole(r) {
+  role = r;
+  document.getElementById('tab-family').classList.toggle('active', r === 'family');
+  document.getElementById('tab-sitter').classList.toggle('active', r === 'sitter');
+  document.getElementById('familyFields').style.display = r === 'family' ? 'block' : 'none';
+  document.getElementById('sitterFields').style.display = r === 'sitter' ? 'contents' : 'none';
+  document.getElementById('formTitle').textContent = r === 'family' ? 'הרשמה כמשפחה' : 'הרשמה כבייביסיטר';
+}
+
+// ── Counter ──
+function changeCount(d) {
+  childCount = Math.max(1, Math.min(10, childCount + d));
+  document.getElementById('childCount').textContent = childCount;
+}
+
+// ── Phone format ──
+function fmtPhone(el) {
+  let v = el.value.replace(/\D/g, '');
+  if (v.length > 3) v = v.slice(0,3) + '-' + v.slice(3);
+  if (v.length > 11) v = v.slice(0,11);
+  el.value = v;
+}
+
+// ── Field validation ──
+function vf(id) {
+  const el = document.getElementById(id);
+  const err = document.getElementById(id + '-e');
+  if (!el) return true;
+  const val = el.value.trim();
+  let ok = false;
+
+  switch(id) {
+    case 'fullName': ok = val.length >= 2; break;
+    case 'phone':    ok = /^05\d-?\d{7}$/.test(val.replace(/\s/g,'')); break;
+    case 'email':    ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val); break;
+    case 'address':  ok = val.length >= 3; break;
+    case 'birthdate': {
+      if (!val) break;
+      const age = Math.floor((Date.now() - new Date(val)) / (365.25*24*3600*1000));
+      ok = age >= 16;
+      break;
+    }
+    case 'experience': ok = val !== ''; break;
+    case 'area':       ok = val !== ''; break;
+    case 'rate':       ok = parseInt(val) >= 30 && parseInt(val) <= 200; break;
+    default: ok = true;
+  }
+
+  el.classList.toggle('err', !ok && val !== '');
+  el.classList.toggle('ok',  ok);
+  if (err) err.classList.toggle('show', !ok && val !== '');
+  return ok;
+}
+
+// ── Full validation ──
+function validateAll() {
+  const base = ['fullName','phone','email','address'];
+  const sitter = ['birthdate','experience','area','rate'];
+  const fields = role === 'sitter' ? [...base, ...sitter] : base;
+  let ok = true;
+  let first = null;
+  fields.forEach(f => {
+    if (!vf(f)) { ok = false; if (!first) first = f; }
+  });
+  if (first) document.getElementById(first)?.scrollIntoView({behavior:'smooth',block:'center'});
+  return ok;
+}
+
+// ── Submit ──
+document.getElementById('regForm').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('globalErr').style.display = 'none';
+
+  if (!validateAll()) {
+    document.getElementById('globalErr').style.display = 'block';
+    setTimeout(() => { document.getElementById('globalErr').style.display = 'none'; }, 3000);
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '⏳ שולח...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    console.log('נרשם:', {
+      role,
+      name:  document.getElementById('fullName').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      address: document.getElementById('address').value,
+      ...(role==='family' ? { children: childCount } : {
+        birthdate: document.getElementById('birthdate').value,
+        experience: document.getElementById('experience').value,
+        area: document.getElementById('area').value,
+        rate: document.getElementById('rate').value
+      }),
+      notes: document.getElementById('notes').value
+    });
+  }, 1000);
+});
+</script>
+<script src="js/register.js"></script>
+</body>
+</html>
