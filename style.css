@@ -1,0 +1,118 @@
+/* ================================================
+   babysitter – Global Styles
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --pink:        #c4557a;
+  --pink-light:  #fde8f2;
+  --pink-soft:   #f0c8da;
+  --pink-bg:     #fdf8fb;
+  --pink-input:  #fdf0f7;
+  --border:      #f0e8ed;
+  --gray:        #aaa;
+  --radius:      12px;
+}
+
+body {
+  font-family: 'Heebo', Arial, sans-serif;
+  direction: rtl;
+  background: var(--pink-bg);
+  color: #333;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 8px rgba(180,80,130,0.08);
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--pink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  text-decoration: none;
+  padding: 7px 13px;
+  border-radius: 10px;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.nav-link:hover  { color: var(--pink); background: var(--pink-light); }
+.nav-link.active { color: var(--pink); background: var(--pink-light); font-weight: 700; }
+
+.nav-right {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--gray);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-icon span:first-child { font-size: 20px; }
+.nav-icon:hover { color: var(--pink); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #3a1f30;
+  color: white;
+  padding: 11px 26px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 9999;
+  display: none;
+  font-family: inherit;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  white-space: nowrap;
+}
