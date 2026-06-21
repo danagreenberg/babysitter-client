@@ -1,0 +1,262 @@
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', Arial, sans-serif;
+    direction: rtl;
+    background: #fdf8fb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+  }
+
+  /* ── MAP ── */
+  .map-area {
+    flex: 1;
+    position: relative;
+  }
+
+  #map { width: 100%; height: 100%; }
+
+  /* Sitter location pin on map */
+  .sitter-map-pin {
+    background: white;
+    border: 3px solid #c4557a;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(180,80,130,0.4);
+    cursor: pointer;
+  }
+
+  .sitter-map-pin img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Pulse animation around sitter pin */
+  .pulse-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: rgba(196, 85, 122, 0.2);
+    animation: pulse 2s ease-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes pulse {
+    0%   { transform: translate(-50%,-50%) scale(0.8); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(1.8); opacity: 0; }
+  }
+
+  /* ── RIGHT PANEL ── */
+  .panel {
+    width: 280px;
+    min-width: 260px;
+    background: #fdf8fb;
+    border-left: 1px solid #f0e8ed;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 20px;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  /* Title */
+  .panel-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: -8px;
+  }
+
+  /* Timer */
+  .timer {
+    font-size: 52px;
+    font-weight: 900;
+    color: #222;
+    letter-spacing: -1px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Battery */
+  .battery-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .battery-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .battery-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .battery-icon { font-size: 20px; }
+
+  .battery-track {
+    flex: 1;
+    height: 10px;
+    background: #f0e0e8;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .battery-fill {
+    width: 75%;
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e8a0bc, #c4557a);
+    transition: width 1s ease;
+  }
+
+  .battery-pct {
+    font-size: 14px;
+    font-weight: 700;
+    color: #c4557a;
+    min-width: 36px;
+  }
+
+  /* Tracking badge */
+  .tracking-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #d4f0da;
+    color: #3a8a50;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    width: fit-content;
+  }
+
+  .tracking-dot {
+    width: 9px; height: 9px;
+    background: #3a8a50;
+    border-radius: 50%;
+    animation: blink 1.5s ease infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: #f0e0e8;
+  }
+
+  /* Buttons */
+  .btn-contact {
+    background: #f0c8da;
+    color: #8a3050;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s;
+    width: 100%;
+  }
+  .btn-contact:hover { background: #e8b0c8; }
+
+  .btn-end {
+    background: white;
+    color: #555;
+    border: 1.5px solid #e8d0dc;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-end:hover { background: #fff0f4; border-color: #c4557a; color: #c4557a; }
+
+
+/* ── Confirmation modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(58, 31, 48, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+.modal-overlay.show { display: flex; }
+
+.modal-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 26px;
+  width: 90%;
+  max-width: 340px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(180, 80, 130, 0.25);
+}
+.modal-title { font-size: 20px; font-weight: 800; color: #222; margin-bottom: 10px; }
+.modal-text  { font-size: 14px; color: #777; margin-bottom: 22px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 12px; }
+.modal-btn {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.modal-cancel  { background: #f3e8ee; color: #8a3050; }
+.modal-cancel:hover  { background: #ecd8e2; }
+.modal-confirm { background: #c4557a; color: #fff; }
+.modal-confirm:hover { background: #a83d62; }
+
+/* Map pin helper classes (moved out of inline styles) */
+.pin-wrap { position: relative; width: 52px; height: 52px; }
+.home-dot {
+  background: #c4557a;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.battery-fill.low { background: linear-gradient(90deg, #ffb300, #f44336); }

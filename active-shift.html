@@ -4,299 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>משמרת פעילה – babysitter</title>
+<link rel="icon" href="images/favicon.svg">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Heebo', Arial, sans-serif;
-    direction: rtl;
-    background: #fdf8fb;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* ── NAVBAR ── */
-  .navbar {
-    background: white;
-    border-bottom: 1px solid #f0e8ed;
-    padding: 0 28px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 1px 6px rgba(180,80,130,0.07);
-    flex-shrink: 0;
-  }
-
-  .logo {
-    font-size: 22px;
-    font-weight: 800;
-    color: #c4557a;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .logo-icon { font-size: 28px; }
-
-  .nav-links-row {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-  }
-
-  .nav-link {
-    font-size: 13px;
-    font-weight: 600;
-    color: #bbb;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 8px;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .nav-link:hover { color: #c4557a; background: #fff0f5; }
-  .nav-link.active { color: #c4557a; background: #fde8f2; }
-
-  .nav-icons {
-    display: flex;
-    gap: 24px;
-    align-items: center;
-  }
-
-  .nav-icon-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    color: #aaa;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-  .nav-icon-item:hover { color: #c4557a; }
-  .nav-icon-item span:first-child { font-size: 22px; }
-
-  /* ── LAYOUT ── */
-  .layout {
-    display: flex;
-    flex: 1;
-    height: calc(100vh - 64px);
-    overflow: hidden;
-  }
-
-  /* ── MAP ── */
-  .map-area {
-    flex: 1;
-    position: relative;
-  }
-
-  #map { width: 100%; height: 100%; }
-
-  /* Sitter location pin on map */
-  .sitter-map-pin {
-    background: white;
-    border: 3px solid #c4557a;
-    border-radius: 50%;
-    width: 52px;
-    height: 52px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(180,80,130,0.4);
-    cursor: pointer;
-  }
-
-  .sitter-map-pin img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Pulse animation around sitter pin */
-  .pulse-ring {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px; height: 70px;
-    border-radius: 50%;
-    background: rgba(196, 85, 122, 0.2);
-    animation: pulse 2s ease-out infinite;
-    pointer-events: none;
-  }
-
-  @keyframes pulse {
-    0%   { transform: translate(-50%,-50%) scale(0.8); opacity: 1; }
-    100% { transform: translate(-50%,-50%) scale(1.8); opacity: 0; }
-  }
-
-  /* ── RIGHT PANEL ── */
-  .panel {
-    width: 280px;
-    min-width: 260px;
-    background: #fdf8fb;
-    border-left: 1px solid #f0e8ed;
-    display: flex;
-    flex-direction: column;
-    padding: 28px 20px;
-    gap: 20px;
-    overflow-y: auto;
-  }
-
-  /* Title */
-  .panel-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: -8px;
-  }
-
-  /* Timer */
-  .timer {
-    font-size: 52px;
-    font-weight: 900;
-    color: #222;
-    letter-spacing: -1px;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Battery */
-  .battery-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .battery-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: #555;
-  }
-
-  .battery-bar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .battery-icon { font-size: 20px; }
-
-  .battery-track {
-    flex: 1;
-    height: 10px;
-    background: #f0e0e8;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .battery-fill {
-    height: 100%;
-    border-radius: 6px;
-    background: linear-gradient(90deg, #e8a0bc, #c4557a);
-    transition: width 1s ease;
-  }
-
-  .battery-pct {
-    font-size: 14px;
-    font-weight: 700;
-    color: #c4557a;
-    min-width: 36px;
-  }
-
-  /* Tracking badge */
-  .tracking-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #d4f0da;
-    color: #3a8a50;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 700;
-    width: fit-content;
-  }
-
-  .tracking-dot {
-    width: 9px; height: 9px;
-    background: #3a8a50;
-    border-radius: 50%;
-    animation: blink 1.5s ease infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.3; }
-  }
-
-  /* Divider */
-  .divider {
-    height: 1px;
-    background: #f0e0e8;
-  }
-
-  /* Buttons */
-  .btn-contact {
-    background: #f0c8da;
-    color: #8a3050;
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 17px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: background 0.2s;
-    width: 100%;
-  }
-  .btn-contact:hover { background: #e8b0c8; }
-
-  .btn-end {
-    background: white;
-    color: #555;
-    border: 1.5px solid #e8d0dc;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 17px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.2s;
-    width: 100%;
-  }
-  .btn-end:hover { background: #fff0f4; border-color: #c4557a; color: #c4557a; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #3a1f30;
-    color: white;
-    padding: 11px 26px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 9999;
-    display: none;
-    font-family: 'Heebo', Arial, sans-serif;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  }
-</style>
+<link rel="stylesheet" href="style/common.css">
+<link rel="stylesheet" href="style/active-shift.css">
 </head>
 <body>
 
@@ -304,13 +16,13 @@
 <nav class="navbar">
   <a class="logo" href="family-search.html">🍼 babysitter</a>
   <div class="nav-links">
+    <a class="nav-link" href="index.html">🏠 בית</a>
     <a class="nav-link " href="family-search.html">🔍 חיפוש</a>
     <a class="nav-link active" href="active-shift.html">⏱️ משמרת פעילה</a>
     <a class="nav-link " href="shift-summary.html">💳 סיכום משמרת</a>
     <a class="nav-link " href="register.html">📝 הרשמה</a>
   </div>
   <div class="nav-right">
-    <a class="nav-icon" href="#"><span>💬</span><span>הודעות</span></a>
     <a class="nav-icon" href="register.html"><span>👤</span><span>פרופיל</span></a>
   </div>
 </nav>
@@ -334,7 +46,7 @@
       <div class="battery-bar-wrap">
         <span class="battery-icon">🔋</span>
         <div class="battery-track">
-          <div class="battery-fill" id="batteryFill" style="width: 75%"></div>
+          <div class="battery-fill" id="batteryFill"></div>
         </div>
         <span class="battery-pct" id="batteryPct">75%</span>
       </div>
@@ -366,103 +78,19 @@
 
 </div>
 
-<div class="toast" id="toast"></div>
-
-<script>
-// ════════ נתוני משמרת (JSON) ════════
-const shiftData = {
-  sitterName: "דנה",
-  sitterImg:  "https://i.pravatar.cc/150?img=47",
-  startTime:  new Date(Date.now() - (2*3600 + 15*60 + 29) * 1000), // לפני 2:15:29
-  lat: 32.0853,
-  lng: 34.8764,
-  battery: 75
-};
-
-// ── Leaflet map ──
-const map = L.map('map', { zoomControl: true }).setView([shiftData.lat, shiftData.lng], 15);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap',
-  maxZoom: 19
-}).addTo(map);
-
-// Sitter pin
-const pinHtml = `
-  <div style="position:relative; width:52px; height:52px;">
-    <div class="pulse-ring"></div>
-    <div class="sitter-map-pin">
-      <img src="${shiftData.sitterImg}" alt="${shiftData.sitterName}"
-           onerror="this.src='https://i.pravatar.cc/150?img=47'">
+<!-- End-shift confirmation modal -->
+<div class="modal-overlay" id="endModal">
+  <div class="modal-box">
+    <div class="modal-title">לסיים את המשמרת?</div>
+    <div class="modal-text">המשמרת תיסגר ותעברו למסך הסיכום והתשלום.</div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-cancel" onclick="closeModal()">ביטול</button>
+      <button class="modal-btn modal-confirm" onclick="confirmEnd()">כן, סיום</button>
     </div>
-  </div>`;
+  </div>
+</div>
 
-const sitterIcon = L.divIcon({
-  className: '',
-  html: pinHtml,
-  iconSize: [52, 52],
-  iconAnchor: [26, 26]
-});
-
-L.marker([shiftData.lat, shiftData.lng], { icon: sitterIcon })
-  .addTo(map)
-  .bindPopup(`<b>${shiftData.sitterName}</b><br>מיקום נוכחי`);
-
-// Family home marker
-const homeIcon = L.divIcon({
-  className: '',
-  html: `<div style="background:#c4557a;border-radius:50%;width:16px;height:16px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8]
-});
-
-L.marker([32.083, 34.872], { icon: homeIcon }).addTo(map)
-  .bindPopup('🏠 הבית שלך');
-
-// ── Timer ──
-function updateTimer() {
-  const elapsed = Math.floor((Date.now() - shiftData.startTime) / 1000);
-  const h = Math.floor(elapsed / 3600);
-  const m = Math.floor((elapsed % 3600) / 60);
-  const s = elapsed % 60;
-  document.getElementById('timerDisplay').textContent =
-    `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-updateTimer();
-setInterval(updateTimer, 1000);
-
-// ── Battery simulation (slowly drains) ──
-let battery = shiftData.battery;
-setInterval(() => {
-  battery = Math.max(0, battery - 0.01);
-  const pct = Math.round(battery);
-  document.getElementById('batteryFill').style.width = pct + '%';
-  document.getElementById('batteryPct').textContent = pct + '%';
-
-  // Color warning when low
-  if (pct < 20) {
-    document.getElementById('batteryFill').style.background = 'linear-gradient(90deg, #ffb300, #f44336)';
-  }
-}, 3000);
-
-// ── End shift ──
-function endShift() {
-  if (confirm('לסיים את המשמרת?')) {
-    showToast('✅ המשמרת הסתיימה! מעבר לסיכום...');
-    setTimeout(() => { window.location.href = 'shift-summary.html'; }, 1800);
-  }
-}
-
-// ── Toast ──
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.display = 'block';
-  clearTimeout(window._tt);
-  window._tt = setTimeout(() => { t.style.display = 'none'; }, 2500);
-}
-</script>
+<div class="toast" id="toast"></div>
 <script src="js/active-shift.js"></script>
 </body>
 </html>

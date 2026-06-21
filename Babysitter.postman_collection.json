@@ -1,0 +1,746 @@
+{
+  "info": {
+    "name": "Babysitter API",
+    "description": "אוסף בקשות לכל ה-routes של שרת ה-Babysitter (Node.js + Express). הגדירו משתנה סביבה baseUrl=http://localhost:3000 ו-token (מתקבל מ-Register/Login).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register – family",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "הרשמת משתמש משפחה. מחזיר user + JWT token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"משפחת כהן\",\n  \"phone\": \"0501112222\",\n  \"email\": \"family@example.com\",\n  \"address\": \"רוטשילד 40, תל אביב\",\n  \"password\": \"0501112222\",\n  \"role\": \"family\",\n  \"children\": 2\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register – sitter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "הרשמת בייביסיטר. נוסף אוטומטית גם ל-sitters ומופיע בחיפוש.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"נועה לוי\",\n  \"phone\": \"0503334444\",\n  \"email\": \"sitter@example.com\",\n  \"address\": \"חיפה\",\n  \"password\": \"0503334444\",\n  \"role\": \"sitter\",\n  \"birthdate\": \"2002-05-10\",\n  \"experience\": \"4\",\n  \"area\": \"hfa\",\n  \"rate\": 75\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register – missing fields (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "דוגמת שגיאה: שדות חובה חסרים.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"חסר\",\n  \"email\": \"x@x.com\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "התחברות. מחזיר user + token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"family@example.com\",\n  \"password\": \"0501112222\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login – wrong password (401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "דוגמת שגיאה: פרטים שגויים.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"family@example.com\",\n  \"password\": \"wrong\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get me (protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "פרטי המשתמש המחובר. דורש Authorization: Bearer token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sitters",
+      "item": [
+        {
+          "name": "List sitters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/sitters",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sitters"
+              ]
+            },
+            "description": "כל הבייביסיטרים."
+          },
+          "response": []
+        },
+        {
+          "name": "Search & filter sitters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/sitters?name=דנה&maxPrice=70&minRating=4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sitters"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "דנה"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "70"
+                },
+                {
+                  "key": "minRating",
+                  "value": "4"
+                }
+              ]
+            },
+            "description": "שאילתה מורכבת: חיפוש לפי שם + סינון לפי מחיר ודירוג."
+          },
+          "response": []
+        },
+        {
+          "name": "Get sitter by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/sitters/sit-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sitters",
+                "sit-001"
+              ]
+            },
+            "description": "בייביסיטר בודד לפי id."
+          },
+          "response": []
+        },
+        {
+          "name": "Sitter stats (aggregation)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/sitters/sit-001/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sitters",
+                "sit-001",
+                "stats"
+              ]
+            },
+            "description": "שאילתה מורכבת: סטטיסטיקה מצטברת (משמרות, רווחים, דירוג ממוצע)."
+          },
+          "response": []
+        },
+        {
+          "name": "Create sitter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sitters",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sitters"
+              ]
+            },
+            "description": "הוספת בייביסיטר (Create).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"מאיה\",\n  \"age\": 23,\n  \"rate\": 65,\n  \"experience\": 3,\n  \"neighborhood\": \"רמת אביב\",\n  \"lat\": 32.11,\n  \"lng\": 34.79,\n  \"bio\": \"אוהבת ילדים\",\n  \"img\": \"https://i.pravatar.cc/300?img=5\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update sitter",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sitters/sit-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sitters",
+                "sit-001"
+              ]
+            },
+            "description": "עדכון בייביסיטר (Update).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate\": 70,\n  \"verified\": true\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete sitter",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/sitters/sit-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sitters",
+                "sit-001"
+              ]
+            },
+            "description": "מחיקת בייביסיטר (Delete)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Families",
+      "item": [
+        {
+          "name": "List families",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/families",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "families"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get family by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/families/fam-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "families",
+                "fam-001"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Create family",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/families",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "families"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parentName\": \"רונית כהן\",\n  \"phone\": \"0502223333\",\n  \"address\": \"תל אביב\",\n  \"children\": 2\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update family",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/families/fam-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "families",
+                "fam-001"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"children\": 3\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete family",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/families/fam-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "families",
+                "fam-001"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "List bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Filter bookings by status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings?status=completed",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "completed"
+                }
+              ]
+            },
+            "description": "שאילתה מורכבת: סינון לפי סטטוס/בייביסיטר/תאריך."
+          },
+          "response": []
+        },
+        {
+          "name": "Bookings by family",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/family/fam-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "family",
+                "fam-001"
+              ]
+            },
+            "description": "שליפה לפי משתמש (משפחה)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get booking by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/bk-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "bk-001"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Create booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sitterId\": \"sit-001\",\n  \"familyId\": \"fam-001\",\n  \"scheduledStart\": \"2026-07-01T09:00:00.000Z\",\n  \"scheduledEnd\": \"2026-07-01T12:00:00.000Z\",\n  \"rate\": 60\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/bk-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "bk-001"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete booking",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/bk-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "bk-001"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Reviews by sitter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/sitter/sit-001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "sitter",
+                "sit-001"
+              ]
+            },
+            "description": "כל הביקורות לבייביסיטר (שליפה עם קשר בין טבלאות)."
+          },
+          "response": []
+        },
+        {
+          "name": "Create review (protected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            },
+            "description": "הוספת ביקורת. דורש התחברות.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sitterId\": \"sit-001\",\n  \"familyId\": \"fam-001\",\n  \"bookingId\": \"bk-001\",\n  \"ratingSitter\": 5,\n  \"ratingFamily\": 5,\n  \"commentSitter\": \"מצוין!\",\n  \"commentFamily\": \"משפחה נהדרת\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Geo (External API)",
+      "item": [
+        {
+          "name": "Geocode address",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/geo/geocode?address=רוטשילד 40 תל אביב",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "geo",
+                "geocode"
+              ],
+              "query": [
+                {
+                  "key": "address",
+                  "value": "רוטשילד 40 תל אביב"
+                }
+              ]
+            },
+            "description": "API חיצוני: המרת כתובת ל-lat/lng דרך Nominatim (OpenStreetMap)."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
