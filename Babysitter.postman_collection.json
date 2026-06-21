@@ -490,6 +490,26 @@
       "name": "Bookings",
       "item": [
         {
+          "name": "Current active shift (public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/current",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "current"
+              ]
+            },
+            "description": "המשמרת הפעילה האחרונה + נתוני הבייביסיטר (JOIN). ציבורי — משמש את דפי המשמרת/סיכום."
+          },
+          "response": []
+        },
+        {
           "name": "List bookings",
           "request": {
             "method": "GET",

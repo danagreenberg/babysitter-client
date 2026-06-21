@@ -149,3 +149,9 @@
     transition: color 0.2s;
   }
   .card-footer:hover { color: #c4557a; }
+
+/* Responsive: stack the two columns on narrow screens */
+@media (max-width: 640px) {
+  .card-body { grid-template-columns: 1fr; }
+  .col-left { border-left: none; border-bottom: 1px solid #f5edf2; }
+}

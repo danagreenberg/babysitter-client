@@ -76,3 +76,39 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
 }
+
+/* clickable affordance */
+.logo, .nav-icon, .nav-link { cursor: pointer; }
+
+/* ── SITE FOOTER (full-width, no side/bottom gaps) ── */
+.site-footer {
+  width: 100%;
+  margin: 0;
+  background: #fff;
+  border-top: 1px solid #f0e8ed;
+  padding: 22px 28px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.site-footer a { color: #c4557a; text-decoration: none; font-weight: 600; }
+.site-footer a:hover { text-decoration: underline; }
+
+/* ── Responsive navbar (all pages) ── */
+@media (max-width: 768px) {
+  .navbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 8px; }
+  .nav-links { flex-wrap: wrap; justify-content: center; }
+  .nav-link { padding: 5px 9px; font-size: 12px; }
+}
+
+/* state helpers (loading / error / empty) */
+.hidden { display: none; }
+.state {
+  padding: 48px 24px;
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+  font-weight: 600;
+}
+.state .state-ico { font-size: 34px; display: block; margin-bottom: 10px; }

@@ -129,3 +129,12 @@ html, body {
 .lpin img { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.85); object-fit: cover; flex-shrink: 0; }
 
 .search-ico { color: #ccc; font-size: 15px; }
+
+/* Responsive: stack sidebar over map on narrow screens */
+@media (max-width: 768px) {
+  .nav-links { position: static; transform: none; }
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; min-width: 0; height: 45%; border-left: none; border-bottom: 1px solid #f0e8ed; }
+  .map-area { height: 55%; }
+  .filters-bar { flex-wrap: wrap; }
+}
