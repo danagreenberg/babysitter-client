@@ -12,7 +12,7 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <a class="logo" href="family-search.html">🍼 babysitter</a>
+  <a class="logo" href="index.html">🍼 babysitter</a>
   <div class="nav-links">
     <a class="nav-link" href="index.html">🏠 בית</a>
     <a class="nav-link " href="family-search.html">🔍 חיפוש</a>
@@ -27,7 +27,9 @@
 
 <!-- PAGE -->
 <div class="page">
-  <div class="summary-card">
+  <div class="state" id="loadingState"><span class="state-ico">⏳</span>טוען סיכום משמרת...</div>
+    <div class="state hidden" id="errorState"><span class="state-ico">⚠️</span>שגיאה בטעינת הסיכום. ודא שהשרת פעיל על פורט 3000.</div>
+    <div class="summary-card hidden" id="summaryCard">
 
     <!-- Header -->
     <div class="card-header">
@@ -43,13 +45,13 @@
 
         <!-- Sitter -->
         <div class="sitter-row">
-          <img class="sitter-avatar"
+          <img class="sitter-avatar" id="sitterImg"
                src="https://i.pravatar.cc/150?img=47"
                alt="דנה"
                onerror="this.src='https://i.pravatar.cc/150?img=1'">
           <div>
             <div class="sitter-sub" id="sitterSub">בייביסיטר עם דנה</div>
-            <div class="sitter-name">דנה</div>
+            <div class="sitter-name" id="sitterName">דנה</div>
           </div>
         </div>
 
@@ -93,5 +95,9 @@
 
 <div class="toast" id="toast"></div>
 <script src="js/shift-summary.js"></script>
+
+<footer class="site-footer">
+  © 2026 babysitter · פרויקט גמר · <a href="index.html">דף הבית</a> · <a href="register.html">הצטרפות</a>
+</footer>
 </body>
 </html>

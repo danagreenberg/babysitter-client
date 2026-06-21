@@ -258,3 +258,9 @@
   /* Sitter-only fields */
   #sitterFields { display: none; }
   #sitterFields.show { display: contents; }
+
+/* Responsive: single column form on narrow screens */
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .card { max-width: 100%; }
+}

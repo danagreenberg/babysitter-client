@@ -260,3 +260,10 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 .battery-fill.low { background: linear-gradient(90deg, #ffb300, #f44336); }
+
+/* Responsive: stack panel over map on narrow screens */
+@media (max-width: 768px) {
+  .layout { flex-direction: column; height: auto; }
+  .panel { width: 100%; min-width: 0; border-left: none; border-bottom: 1px solid #f0e8ed; }
+  .map-area { height: 60vh; }
+}

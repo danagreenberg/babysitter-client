@@ -82,3 +82,12 @@ body {
   .hero-title { font-size: 30px; }
   .nav-links { display: none; }
 }
+
+/* Full-width hero banner image */
+.hero-banner {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 340px;
+  object-fit: cover;
+}
