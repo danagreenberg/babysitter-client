@@ -1,29 +1,31 @@
 /* ================================================
    register.js
-   ולידציה לטופס הרשמה – משפחה ובייביסיטר
+   הרשמה לשרת – שולח POST ל /api/auth/register
    ================================================ */
 
-let regRole = 'family';
-let kids = 3;
+const API_URL = 'http://localhost:3000';
 
-/* -- בחירת תפקיד (משפחה / בייביסיטר) -- */
+let role       = 'family';
+let childCount = 3;
+
+/* -- בחירת תפקיד -- */
 function setRole(r) {
-  regRole = r;
-  document.getElementById('rtab-family').classList.toggle('active', r === 'family');
-  document.getElementById('rtab-sitter').classList.toggle('active', r === 'sitter');
-  document.getElementById('familyBlock').style.display = r === 'family' ? 'block' : 'none';
-  document.getElementById('sitterBlock').style.display = r === 'sitter' ? 'block' : 'none';
-  document.getElementById('regTitle').textContent = r === 'family' ? 'הרשמה כמשפחה' : 'הרשמה כבייביסיטר';
+  role = r;
+  document.getElementById('tab-family').classList.toggle('active', r === 'family');
+  document.getElementById('tab-sitter').classList.toggle('active', r === 'sitter');
+  document.getElementById('familyFields').style.display = r === 'family' ? 'block' : 'none';
+  document.getElementById('sitterFields').style.display = r === 'sitter' ? 'contents' : 'none';
+  document.getElementById('formTitle').textContent = r === 'family' ? 'הרשמה כמשפחה' : 'הרשמה כבייביסיטר';
 }
 
 /* -- Counter ילדים -- */
-function chgKids(d) {
-  kids = Math.max(1, Math.min(10, kids + d));
-  document.getElementById('kidsNum').textContent = kids;
+function changeCount(d) {
+  childCount = Math.max(1, Math.min(10, childCount + d));
+  document.getElementById('childCount').textContent = childCount;
 }
 
-/* -- פורמט טלפון ישראלי -- */
-function rfmtPhone(el) {
+/* -- פורמט טלפון -- */
+function fmtPhone(el) {
   let v = el.value.replace(/\D/g, '');
   if (v.length > 3) v = v.slice(0, 3) + '-' + v.slice(3);
   if (v.length > 11) v = v.slice(0, 11);
@@ -31,83 +33,111 @@ function rfmtPhone(el) {
 }
 
 /* -- ולידציה לשדה בודד -- */
-function rv(id) {
-  const el   = document.getElementById(id);
-  const errEl = document.getElementById(id + '-e');
+function vf(id) {
+  const el  = document.getElementById(id);
+  const err = document.getElementById(id + '-e');
   if (!el) return true;
 
   const val = el.value.trim();
   let ok = false;
 
   switch (id) {
-    case 'rName':  ok = val.length >= 2; break;
-    case 'rPhone': ok = /^05\d-?\d{7}$/.test(val.replace(/\s/g, '')); break;
-    case 'rEmail': ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val); break;
-    case 'rAddr':  ok = val.length >= 3; break;
-    case 'rBdate': {
+    case 'fullName':   ok = val.length >= 2; break;
+    case 'phone':      ok = /^05\d-?\d{7}$/.test(val.replace(/\s/g, '')); break;
+    case 'email':      ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val); break;
+    case 'address':    ok = val.length >= 3; break;
+    case 'birthdate': {
       if (!val) break;
       const age = Math.floor((Date.now() - new Date(val)) / (365.25 * 24 * 3600 * 1000));
       ok = age >= 16;
       break;
     }
-    case 'rRate': ok = parseInt(val) >= 30; break;
+    case 'experience': ok = val !== ''; break;
+    case 'area':       ok = val !== ''; break;
+    case 'rate':       ok = parseInt(val) >= 30 && parseInt(val) <= 200; break;
     default: ok = true;
   }
 
   el.classList.toggle('err', !ok && val !== '');
-  el.classList.toggle('ok', ok);
-  if (errEl) errEl.classList.toggle('show', !ok && val !== '');
+  el.classList.toggle('ok',  ok);
+  if (err) err.classList.toggle('show', !ok && val !== '');
   return ok;
 }
 
-/* -- ולידציה מלאה לפני שליחה -- */
+/* -- ולידציה מלאה -- */
 function validateAll() {
-  const fields = ['rName', 'rPhone', 'rEmail', 'rAddr'];
-  if (regRole === 'sitter') fields.push('rBdate', 'rRate');
-
-  let allOk = true;
-  fields.forEach(f => { if (!rv(f)) allOk = false; });
-  return allOk;
+  const base   = ['fullName', 'phone', 'email', 'address'];
+  const sitter = ['birthdate', 'experience', 'area', 'rate'];
+  const fields = role === 'sitter' ? [...base, ...sitter] : base;
+  let ok = true;
+  fields.forEach(f => { if (!vf(f)) ok = false; });
+  return ok;
 }
 
-/* -- שליחת הטופס -- */
+/* -- שליחה לשרת -- */
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('regForm').addEventListener('submit', e => {
+  document.getElementById('regForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const err = document.getElementById('regGlobalErr');
-    const succ = document.getElementById('regSuccess');
-    const btn  = document.getElementById('regBtn');
+    const globalErr  = document.getElementById('globalErr');
+    const successMsg = document.getElementById('successMsg');
+    const submitBtn  = document.getElementById('submitBtn');
+
+    globalErr.style.display = 'none';
 
     if (!validateAll()) {
-      err.style.display = 'block';
-      setTimeout(() => err.style.display = 'none', 3000);
+      globalErr.textContent   = 'אנא מלא/י את כל השדות הנדרשים';
+      globalErr.style.display = 'block';
+      setTimeout(() => globalErr.style.display = 'none', 3000);
       return;
     }
 
-    btn.textContent = '⏳ שולח...';
-    btn.disabled = true;
+    submitBtn.textContent = '⏳ שולח...';
+    submitBtn.disabled    = true;
 
-    /* שמירת הנתונים (ב-production היה נשלח לשרת) */
-    const formData = {
-      role:    regRole,
-      name:    document.getElementById('rName').value,
-      phone:   document.getElementById('rPhone').value,
-      email:   document.getElementById('rEmail').value,
-      address: document.getElementById('rAddr').value,
-      ...(regRole === 'family'
-        ? { children: kids }
+    const body = {
+      name:     document.getElementById('fullName').value.trim(),
+      phone:    document.getElementById('phone').value.trim(),
+      email:    document.getElementById('email').value.trim(),
+      address:  document.getElementById('address').value.trim(),
+      password: document.getElementById('phone').value.replace(/-/g, ''),
+      role,
+      ...(role === 'family'
+        ? { children: childCount }
         : {
-            birthdate:  document.getElementById('rBdate').value,
-            rate:       document.getElementById('rRate').value
+            birthdate:  document.getElementById('birthdate').value,
+            experience: document.getElementById('experience').value,
+            area:       document.getElementById('area').value,
+            rate:       parseInt(document.getElementById('rate').value)
           }
       )
     };
-    console.log('נתוני הרשמה:', formData);
 
-    setTimeout(() => {
-      btn.style.display = 'none';
-      succ.style.display = 'block';
-    }, 1000);
+    try {
+      const res  = await fetch(`${API_URL}/api/auth/register`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('user',  JSON.stringify(data.data.user));
+
+      submitBtn.style.display  = 'none';
+      successMsg.textContent   = `🎉 נרשמת בהצלחה! ברוך הבא ${data.data.user.name}`;
+      successMsg.style.display = 'block';
+
+      setTimeout(() => { window.location.href = 'family-search.html'; }, 2000);
+
+    } catch (err) {
+      submitBtn.textContent   = 'סיום הרשמה';
+      submitBtn.disabled      = false;
+      globalErr.textContent   = err.message || 'שגיאה בהרשמה, נסה שוב';
+      globalErr.style.display = 'block';
+      setTimeout(() => globalErr.style.display = 'none', 4000);
+    }
   });
 });
