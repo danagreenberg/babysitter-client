@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כניסה – babysitter</title>
+<link rel="icon" href="images/favicon.svg">
+<link rel="stylesheet" href="style/common.css">
+<link rel="stylesheet" href="style/register.css"> 
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="logo" href="index.html">🍼 babysitter</a>
+</nav>
+
+<div class="page">
+  <div class="card">
+
+    <div class="role-tabs">
+      <button class="role-tab active" id="tab-login-mode" onclick="toggleAuthMode('login')">
+        התחברות
+      </button>
+    </div>
+
+    <div class="form-body">
+      <div class="form-title" id="formTitle">כניסה למערכת</div>
+
+      <form id="loginForm">
+        <div class="form-grid">
+          <div class="full">
+            <input class="fi" type="email" id="loginEmail" placeholder="כתובת אימייל" required>
+          </div>
+          <div class="full">
+            <input class="fi" type="password" id="loginPass" placeholder="סיסמה" required>
+          </div>
+          
+          <div class="full">
+            <button type="submit" class="btn-submit" id="loginBtn">כניסה</button>
+            <div class="global-err" id="loginErr" style="display: none; margin-top: 10px;"></div>
+            <div style="text-align: center; margin-top: 20px; font-size: 15px;">
+            אין לך חשבון? 
+            <a href="register.html" style="color: #e91e63; text-decoration: none; font-weight: bold;">
+                לחץ כאן להרשמה
+            </a>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <form id="regForm" style="display: none;" novalidate>
+        
+        <div class="role-tabs" style="margin-bottom: 20px;">
+          <button type="button" class="role-tab active" id="tab-family" onclick="setRole('family')">👨‍👩‍👧 משפחה</button>
+          <button type="button" class="role-tab" id="tab-sitter" onclick="setRole('sitter')">👶 בייביסיטר</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="section-label">פרטים אישיים</div>
+
+          <div>
+            <input class="fi" type="text" id="fullName" placeholder="שם מלא" oninput="vf('fullName')">
+            <div class="ferr" id="fullName-e">אנא הכנס/י שם מלא</div>
+          </div>
+
+          <div>
+            <input class="fi" type="tel" id="phone" placeholder="טלפון נייד" maxlength="11" oninput="fmtPhone(this);vf('phone')">
+            <div class="ferr" id="phone-e">מספר לא תקין</div>
+          </div>
+
+          <div class="full">
+            <input class="fi" type="email" id="email" placeholder="כתובת אימייל" oninput="vf('email')">
+            <div class="ferr" id="email-e">אימייל לא תקין</div>
+          </div>
+
+          <div class="full">
+            <input class="fi" type="text" id="address" placeholder="כתובת מגורים" oninput="vf('address')">
+            <div class="ferr" id="address-e">אנא הכנס/י כתובת</div>
+          </div>
+
+          <div class="full" id="familyFields">
+            <div class="counter-wrap">
+              <span class="counter-label">מספר ילדים:</span>
+              <div class="counter-controls">
+                <button type="button" class="cbtn cbtn-minus" onclick="changeCount(-1)">−</button>
+                <span class="cnum" id="childCount">3</span>
+                <button type="button" class="cbtn cbtn-plus" onclick="changeCount(1)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="sitterFields" style="display: none;">
+            <div class="section-label" style="grid-column: 1 / -1;">פרטי הבייביסיטר</div>
+
+            <div>
+              <input class="fi" type="date" id="birthdate" oninput="vf('birthdate')">
+              <div class="ferr" id="birthdate-e">יש להיות בגיל 16+</div>
+            </div>
+
+            <div class="fselect-wrap">
+              <select class="fselect" id="experience" onchange="vf('experience')">
+                <option value="">שנות ניסיון</option>
+                <option value="0">ללא ניסיון</option>
+                <option value="1">שנה אחת</option>
+                <option value="2">2–3 שנים</option>
+                <option value="4">4–6 שנים</option>
+                <option value="7">7+ שנים</option>
+              </select>
+            </div>
+
+            <div class="fselect-wrap">
+              <select class="fselect" id="area" onchange="vf('area')">
+                <option value="">אזור פעילות</option>
+                <option value="ta">תל אביב</option>
+                <option value="gd">גוש דן</option>
+                <option value="jer">ירושלים</option>
+                <option value="hfa">חיפה והצפון</option>
+                <option value="sth">הדרום</option>
+              </select>
+            </div>
+
+            <div>
+              <input class="fi" type="number" id="rate" placeholder="תעריף (₪)" min="30" max="200" oninput="vf('rate')">
+              <div class="ferr" id="rate-e">אנא הכנס/י תעריף</div>
+            </div>
+          </div>
+
+          <div class="full">
+            <button type="submit" class="btn-submit" id="submitRegBtn">סיום הרשמה</button>
+            <div class="global-err" id="regErr" style="display: none;"></div>
+            <div class="success-msg" id="successMsg" style="display: none;">🎉 נרשמת בהצלחה! מועבר...</div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+
+<footer class="site-footer">
+  © 2026 babysitter · פרויקט גמר · <a href="index.html">דף הבית</a>
+</footer>
+</body>
+</html>
