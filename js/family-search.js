@@ -57,7 +57,7 @@ function getFiltered() {
   });
 }
 
-/* -- רינדור כרטיסים -- */
+/* -- רינדור כרטיסים (לחיצה כאן תזיז את המפה) -- */
 function renderCards(arr) {
   const countEl = document.getElementById('countEl');
   const listEl  = document.getElementById('cardsList');
@@ -69,8 +69,10 @@ function renderCards(arr) {
     return;
   }
 
-  listEl.innerHTML = arr.map(s => `
-    <div class="sc ${selId === s.id ? 'sel' : ''}" onclick="select('${s.id}')">
+  listEl.innerHTML = arr.map(s => {
+    const sId = s.id || s._id;
+    return `
+    <div class="sc ${selId === sId ? 'sel' : ''}" onclick="select('${sId}')">
       <img class="sc-img" src="${s.img}" alt="${s.name}"
            onerror="this.src='https://i.pravatar.cc/300?img=1'">
       <div class="sc-info">
@@ -81,10 +83,11 @@ function renderCards(arr) {
         <div class="sc-stars">${'★'.repeat(Math.round(s.rating))}${'☆'.repeat(5 - Math.round(s.rating))} ${s.rating}</div>
         <div class="sc-rate">₪${s.rate}/שעה</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
-/* -- רינדור פינים על המפה -- */
+/* -- רינדור פינים על המפה (לחיצה כאן תפתח את העמוד) -- */
 function renderPins(arr) {
   Object.values(markers).forEach(m => map.removeLayer(m));
   markers = {};
@@ -92,10 +95,11 @@ function renderPins(arr) {
   arr.forEach(s => {
     if (!s.lat || !s.lng) return;
 
-    const isSel = selId === s.id;
+    const sId = s.id || s._id;
+    const isSel = selId === sId;
     const icon  = L.divIcon({
       className: '',
-      html: `<div class="lpin ${isSel ? 'sel' : ''}" onclick="select('${s.id}')">
+      html: `<div class="lpin ${isSel ? 'sel' : ''}" onclick="goToProfile('${sId}')">
                <img src="${s.img}" onerror="this.src='https://i.pravatar.cc/300?img=1'">
                <span>${s.name} ₪${s.rate}</span>
              </div>`,
@@ -103,16 +107,21 @@ function renderPins(arr) {
       iconSize:   [null, null]
     });
 
-    markers[s.id] = L.marker([s.lat, s.lng], { icon }).addTo(map);
+    markers[sId] = L.marker([s.lat, s.lng], { icon }).addTo(map);
   });
 }
 
-/* -- בחירת בייביסיטר -- */
+/* -- פונקציה 1: בחירת בייביסיטר מהרשימה (ממרכז את המפה) -- */
 function select(id) {
   selId = id;
-  const s = sitters.find(x => x.id === id);
+  const s = sitters.find(x => (x.id === id || x._id === id));
   if (s?.lat && s?.lng) map.flyTo([s.lat, s.lng], 14, { duration: 0.7 });
   refresh();
+}
+
+/* -- פונקציה 2: בחירת בייביסיטר מהמפה (עובר עמוד) -- */
+function goToProfile(id) {
+  window.location.href = `sitter-profile.html?id=${id}`;
 }
 
 /* -- רענון תצוגה -- */

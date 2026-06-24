@@ -1,0 +1,204 @@
+/* ================================================
+   sitter-profile.css
+   עיצוב עמוד פרופיל הבייביסיטר - תואם לשאר האתר
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: 'Heebo', Arial, sans-serif;
+  direction: rtl;
+  background: #fdf8fb; /* תואם לרקע הכללי של האתר */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+/* ── MAIN CARD (תואם ל-shift-summary ו-register) ── */
+.profile-wrapper {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(180, 80, 130, 0.1);
+  width: 100%;
+  max-width: 900px;
+  padding: 40px;
+}
+
+.profile-grid {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+}
+
+/* ── צד ימין: טקסט ופרטים ── */
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* יישור לימין כמו בשאר האתר */
+}
+
+.prof-name {
+  font-size: 38px;
+  font-weight: 900;
+  color: #222;
+  margin-bottom: 16px;
+}
+
+.prof-details {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.prof-details span {
+  font-weight: 800;
+  color: #333;
+}
+
+/* תג מאומת (תואם ל-tracking-badge ב-active-shift) */
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #d4f0da;
+  color: #3a8a50;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+/* אזור ביקורות */
+.reviews-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #222;
+  border-bottom: 1.5px solid #f5edf2;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.reviews-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.review-box {
+  flex: 1;
+  padding: 10px 16px;
+  text-align: center;
+}
+
+/* קווי ההפרדה האנכיים שביקשת מהעיצוב בפיגמה */
+.center-review {
+  border-right: 1.5px solid #f5edf2;
+  border-left: 1.5px solid #f5edf2;
+}
+
+/* צבע הכוכבים תואם ל-family-search */
+.stars {
+  color: #ffb300; 
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.review-text {
+  font-size: 14px;
+  color: #777;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ── צד שמאל: תמונה ופעולות ── */
+.profile-action {
+  width: 320px; /* רוחב קבוע לצד השמאלי */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.prof-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 20px;
+  background: #f5e0ea;
+  box-shadow: 0 4px 16px rgba(180, 80, 130, 0.1);
+  margin-bottom: 24px;
+}
+
+/* כפתורים (תואמים לעיצוב ה-btn הכללי של האתר) */
+.btn-action {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+/* כפתור הזמנה (תואם ל-btn-submit / btn-primary) */
+.btn-book {
+  background: #e091b0;
+  color: white;
+}
+.btn-book:hover {
+  background: #c4557a;
+}
+
+/* כפתור שיחה (תואם ל-btn-contact מעמוד המשמרת הפעילה) */
+.btn-call {
+  background: #f0c8da;
+  color: #8a3050;
+}
+.btn-call:hover {
+  background: #e8b0c8;
+}
+
+/* ── התאמה למובייל ומסכים קטנים ── */
+@media (max-width: 800px) {
+  .profile-grid {
+    flex-direction: column-reverse;
+    gap: 32px;
+  }
+  .profile-action {
+    width: 100%;
+  }
+  .prof-img {
+    height: 240px;
+  }
+}
+
+@media (max-width: 500px) {
+  .reviews-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .center-review {
+    border-right: none;
+    border-left: none;
+    border-top: 1.5px solid #f5edf2;
+    border-bottom: 1.5px solid #f5edf2;
+    padding: 16px 0;
+  }
+}

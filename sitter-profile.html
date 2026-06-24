@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>פרופיל בייביסיטר – babysitter</title>
+  
+  <link rel="stylesheet" href="style/common.css">
+  <link rel="stylesheet" href="style/sitter-profile.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a class="logo" href="index.html">🍼 babysitter</a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">🏠 בית</a>
+      <a class="nav-link active" href="family-search.html">🔍 חיפוש</a>
+      <a class="nav-link" href="upcoming-shifts.html">📅 המשמרות שלי</a>
+      <a class="nav-link" href="active-shift.html">⏱️ משמרת פעילה</a>
+      <a class="nav-link" href="shift-summary.html">💳 סיכום משמרת</a>
+    </div>
+    <div class="nav-right">
+      <a class="nav-icon" href="register.html"><span>👤</span><span>פרופיל</span></a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="profile-wrapper">
+      
+      <div class="profile-grid">
+        <div class="profile-info">
+          <h1 id="profName" class="prof-name">--</h1>
+          
+          <div class="prof-details">
+            <div>גיל: <span id="profAge">--</span></div>
+            <div>תעריף לשעה: ₪<span id="profRate">--</span></div>
+            <div>ניסיון: <span id="profExp">--</span> שנים</div>
+          </div>
+          
+          <div id="profVerified" class="verified-badge" style="display: none;">Verified ✔</div>
+          
+          <h2 class="reviews-title">ביקורות:</h2>
+          
+          <div id="profReviews" class="reviews-container">
+            <div style="text-align: center; color: #888; width: 100%;">טוען ביקורות...</div>
+          </div>
+        </div>
+
+        <div class="profile-action">
+          <img id="profImg" src="images/default-avatar.png" alt="תמונת בייביסיטר" class="prof-img">
+          
+          <button class="btn-action btn-book" onclick="bookSitter()">שלח בקשת הזמנה</button>
+          <button class="btn-action btn-call" onclick="callSitter()">מעבר לשיחת טלפון</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/sitter-profile.js"></script>
+</body>
+</html>
