@@ -1,0 +1,177 @@
+/* ================================================
+   upcoming-shifts.css
+   עיצוב רשימת המשמרות העתידיות (תואם לשאר האתר)
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+/* ── PAGE LAYOUT ── */
+body {
+  font-family: 'Heebo', Arial, sans-serif;
+  direction: rtl;
+  background: #fdf8fb; /* תואם לרקע הכללי של האתר */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+/* ── MAIN CARD (תואם בדיוק ל-register ו-summary) ── */
+.card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(180, 80, 130, 0.1);
+  width: 100%;
+  max-width: 600px;
+  padding: 32px 36px;
+}
+
+.shifts-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #333;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* ── SHIFT ITEMS (תואם לתיבות הנתונים ב-summary) ── */
+.shift-item {
+  background: #fdf8fb;
+  border: 1px solid #f5edf2;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.2s;
+}
+
+.shift-item:hover {
+  border-color: #e8b4ca;
+  box-shadow: 0 4px 12px rgba(180, 80, 130, 0.05);
+  transform: translateY(-2px);
+}
+
+.shift-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f5edf2;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.sitter-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sitter-info img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f5edf2;
+  background: #f5e0ea;
+}
+
+.sitter-info span {
+  font-size: 18px;
+  font-weight: 800;
+  color: #222;
+}
+
+.shift-rate {
+  font-size: 16px;
+  font-weight: 800;
+  color: #c4557a;
+}
+
+.shift-times {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.shift-times strong {
+  color: #333;
+  font-weight: 700;
+}
+
+/* ── BUTTONS (תואם לכפתורים ב-register וב-index) ── */
+.btn-submit {
+  width: 100%;
+  background: #e091b0;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover {
+  background: #c4557a;
+}
+
+.btn-cancel {
+  width: 100%;
+  background: white;
+  color: #c4557a;
+  border: 1.5px solid #e8c4d4;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #fff0f5;
+  border-color: #c4557a;
+}
+
+/* ── ERRORS & EMPTY STATE ── */
+.time-error {
+  color: #d06060;
+  background: #fff0f0;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 15px;
+  display: none;
+  font-weight: 700;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #aaa;
+  font-size: 16px;
+  font-weight: 600;
+  background: #fdf8fb;
+  border-radius: 16px;
+  border: 1.5px dashed #f5edf2;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .page { padding: 30px 15px; }
+  .card { padding: 24px 20px; }
+  .shift-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .shift-rate { align-self: flex-start; margin-right: 66px; }
+}

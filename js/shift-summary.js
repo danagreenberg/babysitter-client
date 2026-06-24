@@ -31,20 +31,47 @@ function fmtTime(iso) {
 }
 
 function render(b) {
-  const s     = b.sitter || {};
-  const hours = Math.round((new Date(b.scheduledEnd) - new Date(b.scheduledStart)) / 3600000);
-  const set   = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const s = b.sitter || {};
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  const startTime = new Date(b.checkIn || b.scheduledStart);
+  const savedEndTime = localStorage.getItem('actualEndTime');
+  let endTime = savedEndTime ? new Date(savedEndTime) : new Date(b.scheduledEnd);
+
+  // --- התיקון החכם למצגות ---
+  // אנחנו לוקחים את התאריך של היום (מזמן הסיום) ומלבישים אותו על שעת ההתחלה
+  // כך המערכת מתעלמת מימים קודמים שהוגדרו במסד הנתונים ומחשבת רק שעות
+  startTime.setFullYear(endTime.getFullYear(), endTime.getMonth(), endTime.getDate());
+
+  let diffMs = endTime.getTime() - startTime.getTime();
+  
+  // הגנה למקרה של משמרת שחוצה את חצות (למשל מ-23:00 עד 01:00)
+  if (diffMs < 0) {
+    diffMs += 24 * 3600000;
+  }
+
+  let hours = diffMs / 3600000;
+
+  // מנגנון ההגנה לבדיקות מהירות (לחיצה על סיום אחרי כמה שניות)
+  if (hours <= 0.15) { 
+    const plannedDiff = new Date(b.scheduledEnd) - new Date(b.scheduledStart);
+    hours = plannedDiff / 3600000;
+    endTime = new Date(startTime.getTime() + plannedDiff);
+  }
+
+  const rateNum = parseFloat(b.rate) || 0;
+  const actualTotal = Math.round(hours * rateNum);
 
   const img = document.getElementById('sitterImg');
   if (img && s.img) img.src = s.img;
 
   set('sitterName',  s.name || '—');
   set('sitterSub',   'בייביסיטר עם ' + (s.name || ''));
-  set('shiftStart',  fmtTime(b.scheduledStart));
-  set('shiftEnd',    fmtTime(b.scheduledEnd));
-  set('shiftHours',  hours + ' שעות');
-  set('shiftRate',   '₪' + b.rate + '/שעה');
-  set('shiftTotal',  '₪' + b.total);
+  set('shiftStart',  fmtTime(startTime));
+  set('shiftEnd',    fmtTime(endTime));
+  set('shiftHours',  hours.toFixed(1) + ' שעות');
+  set('shiftRate',   '₪' + rateNum + '/שעה');
+  set('shiftTotal',  '₪' + actualTotal);
 }
 
 /* -- תשלום -- */

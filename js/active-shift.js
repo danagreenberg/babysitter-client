@@ -50,21 +50,28 @@ function initMap(lat, lng, sitter) {
   }).addTo(map).bindPopup('🏠 הבית שלך');
 }
 
-/* -- טיימר (מבוסס זמן הצ'ק-אין מה-DB) -- */
+/* -- טיימר חכם -- */
 function startTimer(startIso) {
-  let base = new Date(startIso);
-  const elapsed0 = (Date.now() - base.getTime()) / 1000;
-  // fallback: אם הזמן לא תקין / עתידי / ישן מאוד — מתחילים מרגע הטעינה
-  if (!isFinite(elapsed0) || elapsed0 < 0 || elapsed0 > 12 * 3600) base = new Date();
+  // ננסה לקחת את שעת הלחיצה האמיתית מהמסך הקודם, ואם אין - ניקח מהשרת
+  const savedStartTime = localStorage.getItem('actualStartTime');
+  let base = savedStartTime ? new Date(savedStartTime) : new Date(startIso);
+  
+  // הגנה אם משהו לא תקין
+  if (isNaN(base.getTime())) base = new Date();
 
   const el = document.getElementById('timerDisplay');
+  
   function update() {
     const e = Math.floor((Date.now() - base.getTime()) / 1000);
+    // אם ההפרש שלילי (במקרה של באג), נציג 0
+    if (e < 0) return;
+    
     const h = Math.floor(e / 3600);
     const m = Math.floor((e % 3600) / 60);
     const s = e % 60;
     if (el) el.textContent = h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
   }
+  
   update();
   setInterval(update, 1000);
 }
@@ -85,8 +92,16 @@ function startBattery() {
 /* -- סיום משמרת — מודאל במקום confirm() -- */
 function endShift()   { document.getElementById('endModal').classList.add('show'); }
 function closeModal() { document.getElementById('endModal').classList.remove('show'); }
+
 function confirmEnd() {
   closeModal();
+  
+  // 1. לוקחים את התאריך והשעה המדויקים של הרגע שבו לחצת על הכפתור
+  const exactEndTime = new Date().toISOString();
+  
+  // 2. שומרים את זה בזיכרון של הדפדפן כדי שדף הסיכום יוכל למשוך את זה
+  localStorage.setItem('actualEndTime', exactEndTime);
+
   showToast('✅ המשמרת הסתיימה! מעבר לסיכום...');
   setTimeout(() => { window.location.href = 'shift-summary.html'; }, 1600);
 }
