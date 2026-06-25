@@ -25,7 +25,7 @@ async function init() {
 function setupShift(b) {
   const s = b.sitter || {};
   initMap(s.lat || 32.0853, s.lng || 34.8764, s);
-  startTimer(b.checkIn || b.scheduledStart);
+  startTimer();
 }
 
 /* -- מפה -- */
@@ -51,29 +51,54 @@ function initMap(lat, lng, sitter) {
 }
 
 /* -- טיימר חכם -- */
-function startTimer(startIso) {
-  // ננסה לקחת את שעת הלחיצה האמיתית מהמסך הקודם, ואם אין - ניקח מהשרת
+/* -- טיימר חכם (מעודכן: רץ *רק* אם נלחץ כפתור ההתחלה) -- */
+function startTimer() {
+  // מושך את שעת ההתחלה האמיתית מהזיכרון (שנשמרה בעמוד 'המשמרות שלי')
   const savedStartTime = localStorage.getItem('actualStartTime');
-  let base = savedStartTime ? new Date(savedStartTime) : new Date(startIso);
-  
-  // הגנה אם משהו לא תקין
-  if (isNaN(base.getTime())) base = new Date();
-
   const el = document.getElementById('timerDisplay');
+
+  // אם אין שעת התחלה בזיכרון, סימן שלא לחצו "התחל משמרת"
+  if (!savedStartTime) {
+    if (el) el.textContent = '00:00:00';
+    return; // עוצר את הפונקציה כאן - השעון לא יתחיל לרוץ!
+  }
+
+  const base = new Date(savedStartTime);
   
   function update() {
-    const e = Math.floor((Date.now() - base.getTime()) / 1000);
-    // אם ההפרש שלילי (במקרה של באג), נציג 0
-    if (e < 0) return;
+    const diffSeconds = Math.floor((Date.now() - base.getTime()) / 1000);
+    if (diffSeconds < 0) return;
     
-    const h = Math.floor(e / 3600);
-    const m = Math.floor((e % 3600) / 60);
-    const s = e % 60;
-    if (el) el.textContent = h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    const h = Math.floor(diffSeconds / 3600);
+    const m = Math.floor((diffSeconds % 3600) / 60);
+    const s = diffSeconds % 60;
+    
+    if (el) {
+      el.textContent = h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
   }
   
   update();
   setInterval(update, 1000);
+}
+
+/* -- סיום משמרת ומעבר לסיכום (מעודכן: מאפס את הזיכרון) -- */
+function confirmEnd() {
+  closeModal();
+  
+  // 1. שומרים את שעת הסיום לטובת מסך הסיכום
+  const exactEndTime = new Date().toISOString();
+  localStorage.setItem('actualEndTime', exactEndTime);
+
+  // 2. התיקון הקריטי: מוחקים את שעת ההתחלה!
+  // ככה בפעם הבאה שייכנסו לעמוד הזה, השעון יחכה על 00:00:00
+  localStorage.removeItem('actualStartTime');
+
+  showToast('✅ המשמרת הסתיימה! מעבר לסיכום...');
+  
+  setTimeout(() => { 
+    window.location.href = 'shift-summary.html'; 
+  }, 1600);
 }
 
 /* -- סוללה (סימולציה של מכשיר) -- */
@@ -95,18 +120,20 @@ function closeModal() { document.getElementById('endModal').classList.remove('sh
 
 function confirmEnd() {
   closeModal();
-  // קוד לדוגמה מתוך active-shift.js בזמן סיום משמרת
-localStorage.setItem('currentSitterId', id_shel_ha_babysitter);
-window.location.href = 'shift-summary.html';
-
-  // 1. לוקחים את התאריך והשעה המדויקים של הרגע שבו לחצת על הכפתור
+  
+  // 1. לוקחים את התאריך והשעה המדויקים של הרגע שבו לחצת על סיום
   const exactEndTime = new Date().toISOString();
   
-  // 2. שומרים את זה בזיכרון של הדפדפן כדי שדף הסיכום יוכל למשוך את זה
+  // 2. שומרים בזיכרון של הדפדפן כדי שדף הסיכום יוכל למשוך את זה
   localStorage.setItem('actualEndTime', exactEndTime);
 
+  // 3. מציגים את ההתראה היפה (Toast)
   showToast('✅ המשמרת הסתיימה! מעבר לסיכום...');
-  setTimeout(() => { window.location.href = 'shift-summary.html'; }, 1600);
+  
+  // 4. ממתינים שנייה וחצי כדי שההודעה תספיק להופיע, ואז עוברים עמוד
+  setTimeout(() => { 
+    window.location.href = 'shift-summary.html'; 
+  }, 1600);
 }
 
 /* -- Toast -- */
