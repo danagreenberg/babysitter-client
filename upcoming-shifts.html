@@ -25,15 +25,42 @@
   </nav>
 
   <div class="page">
-    <div class="card">
-      <h2 class="shifts-title">המשמרות המתוכננות שלי</h2>
-      
-      <div id="shiftsList">
-        <div class="empty-state">⏳ בודק נתונים מול השרת...</div>
+    <div class="shifts-wrapper">
+      <h2 class="page-title">ניהול המשמרות שלי</h2>
+
+      <div class="acc-section">
+        <button class="acc-header" onclick="toggleAcc('pendingAcc', this)">
+          בקשות ממתינות לאישור <span class="acc-badge" id="pendingCount">0</span> <span class="acc-icon">▼</span>
+        </button>
+        <div class="acc-body" id="pendingAcc" style="display: none;">
+          <div id="pendingList" class="shifts-list"></div>
+        </div>
       </div>
-      
+
+      <div class="acc-section">
+        <button class="acc-header active" onclick="toggleAcc('upcomingAcc', this)">
+          משמרות קרובות <span class="acc-badge" id="upcomingCount">0</span> <span class="acc-icon">▲</span>
+        </button>
+        <div class="acc-body" id="upcomingAcc" style="display: block;">
+          <div id="upcomingList" class="shifts-list">
+            <div class="empty-state">⏳ טוען נתונים...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-section">
+        <button class="acc-header" onclick="toggleAcc('completedAcc', this)">
+          היסטוריית משמרות <span class="acc-badge" id="completedCount">0</span> <span class="acc-icon">▼</span>
+        </button>
+        <div class="acc-body" id="completedAcc" style="display: none;">
+          <div id="completedList" class="shifts-list"></div>
+        </div>
+      </div>
+
     </div>
   </div>
+
+  <div class="toast" id="toast"></div>
 
   <script src="js/upcoming-shifts.js"></script>
 </body>

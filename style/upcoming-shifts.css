@@ -1,15 +1,14 @@
 /* ================================================
    upcoming-shifts.css
-   עיצוב רשימת המשמרות העתידיות (תואם לשאר האתר)
+   עיצוב רשימת המשמרות והאקורדיונים
    ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
 
-/* ── PAGE LAYOUT ── */
 body {
   font-family: 'Heebo', Arial, sans-serif;
   direction: rtl;
-  background: #fdf8fb; /* תואם לרקע הכללי של האתר */
+  background: #fdf8fb;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -23,66 +22,123 @@ body {
   padding: 48px 20px;
 }
 
-/* ── MAIN CARD (תואם בדיוק ל-register ו-summary) ── */
-.card {
-  background: white;
-  border-radius: 24px;
-  box-shadow: 0 4px 32px rgba(180, 80, 130, 0.1);
+.shifts-wrapper {
   width: 100%;
-  max-width: 600px;
-  padding: 32px 36px;
+  max-width: 650px;
 }
 
-.shifts-title {
-  font-size: 22px;
+.page-title {
+  font-size: 28px;
   font-weight: 800;
-  color: #333;
+  color: #222;
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
 }
 
-/* ── SHIFT ITEMS (תואם לתיבות הנתונים ב-summary) ── */
-.shift-item {
-  background: #fdf8fb;
-  border: 1px solid #f5edf2;
-  border-radius: 16px;
-  padding: 20px;
+/* ── ACCORDION (כותרות נפתחות) ── */
+.acc-section {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(180, 80, 130, 0.08);
   margin-bottom: 20px;
+  overflow: hidden;
+  border: 1.5px solid transparent;
   transition: all 0.2s;
 }
 
-.shift-item:hover {
-  border-color: #e8b4ca;
-  box-shadow: 0 4px 12px rgba(180, 80, 130, 0.05);
-  transform: translateY(-2px);
+.acc-section:focus-within {
+  border-color: #f0c8da;
+}
+
+.acc-header {
+  width: 100%;
+  background: white;
+  border: none;
+  padding: 22px 24px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #333;
+  text-align: right;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.acc-header:hover {
+  background: #fff8fb;
+}
+
+.acc-header.active {
+  background: #fdf0f7;
+  color: #c4557a;
+  border-bottom: 1.5px solid #f5edf2;
+}
+
+.acc-badge {
+  background: #e8c4d4;
+  color: #8a3050;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 14px;
+  margin-right: 12px;
+}
+
+.acc-icon {
+  margin-right: auto;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.acc-header.active .acc-icon {
+  color: #c4557a;
+}
+
+.acc-body {
+  padding: 24px;
+  background: #fdf8fb;
+}
+
+/* ── SHIFT ITEMS (כרטיסיות המשמרת) ── */
+.shift-item {
+  background: white;
+  border: 1.5px solid #f5edf2;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(180, 80, 130, 0.04);
+}
+
+.shift-item:last-child {
+  margin-bottom: 0;
 }
 
 .shift-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f5edf2;
-  padding-bottom: 15px;
-  margin-bottom: 15px;
+  border-bottom: 1.5px solid #f5edf2;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .sitter-info {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .sitter-info img {
-  width: 52px;
-  height: 52px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #f5edf2;
-  background: #f5e0ea;
 }
 
 .sitter-info span {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 800;
   color: #222;
 }
@@ -94,84 +150,79 @@ body {
 }
 
 .shift-times {
-  font-size: 15px;
+  font-size: 14px;
   color: #555;
   line-height: 1.8;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .shift-times strong {
   color: #333;
-  font-weight: 700;
 }
 
-/* ── BUTTONS (תואם לכפתורים ב-register וב-index) ── */
+/* ── BUTTONS ── */
 .btn-submit {
   width: 100%;
   background: #e091b0;
   color: white;
   border: none;
   border-radius: 14px;
-  padding: 15px;
-  font-size: 17px;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-submit:hover {
-  background: #c4557a;
-}
-
-.btn-cancel {
-  width: 100%;
-  background: white;
-  color: #c4557a;
-  border: 1.5px solid #e8c4d4;
-  border-radius: 14px;
   padding: 14px;
   font-size: 16px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  margin-top: 10px;
+  margin-bottom: 10px;
   transition: all 0.2s;
 }
+.btn-submit:hover { background: #c4557a; }
 
-.btn-cancel:hover {
-  background: #fff0f5;
-  border-color: #c4557a;
+.btn-cancel {
+  width: 100%;
+  background: white;
+  color: #888;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
 }
+.btn-cancel:hover { background: #fff0f0; color: #d32f2f; border-color: #fde4e4; }
 
-/* ── ERRORS & EMPTY STATE ── */
+.btn-rate {
+  width: 100%;
+  background: #fdf0f7;
+  color: #c4557a;
+  border: 1.5px solid #e8c4d4;
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-rate:hover { background: #fff8fb; border-color: #c4557a; }
+
 .time-error {
   color: #d06060;
   background: #fff0f0;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
   text-align: center;
-  margin-top: 15px;
+  margin-top: 10px;
   display: none;
   font-weight: 700;
 }
 
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 30px 20px;
   color: #aaa;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  background: #fdf8fb;
-  border-radius: 16px;
-  border: 1.5px dashed #f5edf2;
-}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  .page { padding: 30px 15px; }
-  .card { padding: 24px 20px; }
-  .shift-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .shift-rate { align-self: flex-start; margin-right: 66px; }
 }

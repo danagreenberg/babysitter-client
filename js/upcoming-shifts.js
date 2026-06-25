@@ -1,106 +1,139 @@
 /* ================================================
    upcoming-shifts.js
-   חיבור לדאטה-בייס (MongoDB דרך Node.js)
+   ניהול אקורדיון למשמרות (בקשות, קרובות, היסטוריה)
    ================================================ */
 
-// מקבעים את הכתובת לשרת המקומי שלך (פורט 3000)
 const API_URL = 'http://localhost:3000';
 
-document.addEventListener('DOMContentLoaded', loadUpcomingShifts);
+document.addEventListener('DOMContentLoaded', loadAllShifts);
 
-// פונקציית עזר לסידור התאריך והשעה
 function fmtDateTime(iso) {
   if (!iso) return '--';
   const d = new Date(iso);
   return d.toLocaleDateString('he-IL') + ' | ' + d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
 }
 
-/* ================================================
-   1. משיכת נתונים מהדאטה-בייס
-   ================================================ */
-async function loadUpcomingShifts() {
-  const listEl = document.getElementById('shiftsList');
+/* ── פתיחה/סגירה של האקורדיון ── */
+function toggleAcc(contentId, btnElement) {
+  const content = document.getElementById(contentId);
+  const icon = btnElement.querySelector('.acc-icon');
   
-  try {
-    // משיכת הטוקן כדי שהשרת ידע מי המשפחה המחוברת
-    const token = localStorage.getItem('token');
-    if (!token) {
-      listEl.innerHTML = '<div class="empty-state" style="color: #d32f2f;">אינך מחוברת. אנא התחברי למערכת.</div>';
-      return;
-    }
-
-    console.log('מתחבר לשרת בכתובת:', `${API_URL}/api/bookings`); // הדפסה לבדיקה
-    
-    // קריאה לנתיב ההזמנות בשרת (שימי לב שזה תואם ל-Route שיצרת ב-Node)
-    const res = await fetch(`${API_URL}/api/bookings`, {
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    const data = await res.json();
-    
-    // מדפיס את מה שחזר מהדאטה-בייס לקונסול כדי שתוכלי לראות (F12)
-    console.log('נתונים שהתקבלו מה-DB:', data); 
-    
-    if (!res.ok || !data.success) {
-      throw new Error(data.error || 'השרת החזיר שגיאה בטעינת הנתונים');
-    }
-
-    // מוודא שהנתונים הם מערך כדי שנוכל לצייר אותם
-    let shifts = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : []);
-
-    if (shifts.length === 0) {
-      listEl.innerHTML = '<div class="empty-state">אין לך משמרות מתוכננות כרגע.</div>';
-      return;
-    }
-
-    // ציור הנתונים למסך
-    listEl.innerHTML = shifts.map(b => {
-      const s = b.sitter || {};
-      // תמיכה ב-MongoDB שמשתמש ב-_id במקום id
-      const bookingId = b._id || b.id; 
-      
-      return `
-        <div class="shift-item">
-          <div class="shift-header">
-            <div class="sitter-info">
-              <img src="${s.img || 'images/default-avatar.png'}" onerror="this.src='https://i.pravatar.cc/150?img=1'">
-              <span>${s.name || 'בייביסיטר'}</span>
-            </div>
-            <span class="shift-rate">₪${b.rate || 0}/שעה</span>
-          </div>
-          
-          <div class="shift-times">
-            <div><strong>התחלה מתוכננת:</strong> ${fmtDateTime(b.scheduledStart)}</div>
-            <div><strong>סיום משוער:</strong> ${fmtDateTime(b.scheduledEnd)}</div>
-          </div>
-          
-          <button class="btn-submit" onclick="tryStartShift('${bookingId}', '${b.scheduledStart}')">
-            התחל משמרת
-          </button>
-          
-          <button class="btn-cancel" onclick="cancelShift('${bookingId}')">
-            ביטול משמרת
-          </button>
-          
-          <div id="err-${bookingId}" class="time-error"></div>
-        </div>
-      `;
-    }).join('');
-
-  } catch (err) {
-    console.error('שגיאת צד לקוח:', err);
-    listEl.innerHTML = `<div class="empty-state" style="color: #d32f2f;">
-      <b>שגיאה בחיבור לדאטה-בייס:</b><br>${err.message}
-    </div>`;
+  if (content.style.display === 'none' || content.style.display === '') {
+    content.style.display = 'block';
+    btnElement.classList.add('active');
+    icon.textContent = '▲';
+  } else {
+    content.style.display = 'none';
+    btnElement.classList.remove('active');
+    icon.textContent = '▼';
   }
 }
 
-/* ================================================
-   2. התחלת משמרת (ולידציית זמנים)
-   ================================================ */
+/* ── משיכת נתונים מהשרת וחלוקה לקטגוריות ── */
+async function loadAllShifts() {
+  const pendingEl = document.getElementById('pendingList');
+  const upcomingEl = document.getElementById('upcomingList');
+  const completedEl = document.getElementById('completedList');
+
+  const token = localStorage.getItem('token');
+  
+  // טיפול במקרה של משתמש לא מחובר - הצגת שגיאה בכל התיקיות
+  if (!token) {
+    const loginMsg = '<div class="empty-state" style="color: #d32f2f; font-weight: bold;">אינך מחוברת. אנא התחברי כדי לראות את המשמרות.</div>';
+    pendingEl.innerHTML = loginMsg;
+    upcomingEl.innerHTML = loginMsg;
+    completedEl.innerHTML = loginMsg;
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/bookings`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.error || 'השרת החזיר שגיאה');
+
+    const shifts = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : []);
+
+    // פיצול המערך ל-3 קטגוריות לפי סטטוס
+    const pendingShifts = shifts.filter(s => s.status === 'pending');
+    const upcomingShifts = shifts.filter(s => s.status === 'approved' || s.status === 'confirmed' || !s.status);
+    const completedShifts = shifts.filter(s => s.status === 'completed');
+
+    // עדכון המספרים בכותרות האקורדיון
+    document.getElementById('pendingCount').textContent = pendingShifts.length;
+    document.getElementById('upcomingCount').textContent = upcomingShifts.length;
+    document.getElementById('completedCount').textContent = completedShifts.length;
+
+    // רינדור כל רשימה בנפרד
+    renderList('pendingList', pendingShifts, 'pending');
+    renderList('upcomingList', upcomingShifts, 'upcoming');
+    renderList('completedList', completedShifts, 'completed');
+
+  } catch (err) {
+    console.error('שגיאה:', err);
+    const errMsg = `<div class="empty-state" style="color: #d32f2f;">שגיאה: ${err.message}</div>`;
+    pendingEl.innerHTML = errMsg;
+    upcomingEl.innerHTML = errMsg;
+    completedEl.innerHTML = errMsg;
+  }
+}
+
+/* ── ציור הכרטיסיות (משתנה לפי סוג הקטגוריה) ── */
+function renderList(containerId, shiftsArray, listType) {
+  const listEl = document.getElementById(containerId);
+  
+  if (shiftsArray.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">אין משמרות בקטגוריה זו.</div>';
+    return;
+  }
+
+  listEl.innerHTML = shiftsArray.map(b => {
+    const s = b.sitter || {};
+    const bookingId = b._id || b.id;
+    
+    // קביעת איזה כפתורים להציג לפי סוג הקטגוריה
+    let buttonsHtml = '';
+    
+    if (listType === 'pending') {
+      buttonsHtml = `
+        <button class="btn-cancel" onclick="cancelShift('${bookingId}')">ביטול בקשה</button>
+      `;
+    } else if (listType === 'upcoming') {
+      buttonsHtml = `
+        <button class="btn-submit" onclick="tryStartShift('${bookingId}', '${b.scheduledStart}')">התחל משמרת</button>
+        <button class="btn-cancel" onclick="cancelShift('${bookingId}')">ביטול משמרת</button>
+        <div id="err-${bookingId}" class="time-error"></div>
+      `;
+    } else if (listType === 'completed') {
+      // הסרנו את כפתור הדירוג מכאן, מציג רק מידע
+      buttonsHtml = ''; 
+    }
+
+    return `
+      <div class="shift-item">
+        <div class="shift-header">
+          <div class="sitter-info">
+            <img src="${s.img || 'images/default-avatar.png'}" onerror="this.src='https://i.pravatar.cc/150?img=1'">
+            <span>${s.name || 'בייביסיטר'}</span>
+          </div>
+          <span class="shift-rate">₪${b.rate || 0}/שעה</span>
+        </div>
+        
+        <div class="shift-times">
+          <div><strong>התחלה מתוכננת:</strong> ${fmtDateTime(b.scheduledStart)}</div>
+          <div><strong>סיום משוער:</strong> ${fmtDateTime(b.scheduledEnd)}</div>
+        </div>
+        
+        ${buttonsHtml}
+      </div>
+    `;
+  }).join('');
+}
+
+/* ── פונקציות הכפתורים ── */
+
 function tryStartShift(bookingId, scheduledStartIso) {
   const errMsgEl = document.getElementById(`err-${bookingId}`);
   if(errMsgEl) errMsgEl.style.display = 'none';
@@ -126,39 +159,38 @@ function tryStartShift(bookingId, scheduledStartIso) {
     return;
   }
 
-  if (diffMinutes > 180) {
-     errMsgEl.innerHTML = '❌ עבר זמן רב משעת ההתחלה. אימות נדרש.';
-     errMsgEl.style.display = 'block';
-     return;
-  }
-
-  // שמירת שעת ההתחלה ומעבר לדף המשמרת הפעילה
+  localStorage.setItem('currentSitterId', bookingId);
   localStorage.setItem('actualStartTime', now.toISOString());
   window.location.href = 'active-shift.html';
 }
 
-/* ================================================
-   3. ביטול משמרת (מחיקה מה-DB)
-   ================================================ */
 async function cancelShift(bookingId) {
-  if (!confirm('האם את בטוחה שברצונך לבטל את המשמרת? פעולה זו אינה הפיכה.')) return;
+  if (!confirm('האם את בטוחה שברצונך לבטל? פעולה זו אינה הפיכה.')) return;
   
   try {
     const token = localStorage.getItem('token');
-    
-    // קריאה לנתיב המחיקה בשרת
     const res = await fetch(`${API_URL}/api/bookings/${bookingId}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });
     
     const data = await res.json();
-    if (!data.success) throw new Error(data.error || 'שגיאה במחיקת הנתונים');
+    if (!data.success) throw new Error(data.error);
     
-    // מרענן את הרשימה אחרי מחיקה מוצלחת
-    loadUpcomingShifts();
+    showToast('✅ הפעולה בוצעה בהצלחה');
+    loadAllShifts(); // מרענן את המסך כולו
     
   } catch (err) {
     alert('שגיאה בביטול: ' + err.message);
   }
+}
+
+/* ── Toast ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.style.display = 'none', 2500);
 }
