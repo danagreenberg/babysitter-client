@@ -1,266 +1,249 @@
-  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+/* ================================================
+   register.css
+   עיצוב עמוד הרשמה כולל בחירת תפקיד, מונה ילדים והעלאת תמונה
+   ================================================ */
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap');
 
-  body {
-    font-family: 'Heebo', Arial, sans-serif;
-    direction: rtl;
-    background: #fdf8fb;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Heebo', Arial, sans-serif;
+  direction: rtl;
+  background: #fdf8fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
 
-  /* ── PAGE ── */
-  .page {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-  }
+.register-wrapper {
+  width: 100%;
+  padding: 30px 20px;
+  display: flex;
+  justify-content: center;
+}
 
-  .card {
-    background: white;
-    border-radius: 24px;
-    box-shadow: 0 4px 32px rgba(180,80,130,0.1);
-    width: 100%;
-    max-width: 520px;
-    overflow: hidden;
-  }
+.register-card {
+  background: white;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(180, 80, 130, 0.1);
+  text-align: center;
+}
 
-  /* ── ROLE TABS ── */
-  .role-tabs {
-    display: flex;
-    border-bottom: 1px solid #f5edf2;
-  }
+.brand-logo {
+  font-size: 24px;
+  font-weight: 900;
+  color: #c4557a;
+  margin-bottom: 15px;
+}
 
-  .role-tab {
-    flex: 1;
-    padding: 18px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 700;
-    color: #bbb;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    background: white;
-    border: none;
-    font-family: inherit;
-  }
+.register-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #222;
+  margin: 0 0 8px 0;
+}
 
-  .role-tab:first-child { border-left: 1px solid #f5edf2; }
+.register-subtitle {
+  font-size: 14px;
+  color: #777;
+  margin: 0 0 25px 0;
+  line-height: 1.4;
+}
 
-  .role-tab.active {
-    color: #c4557a;
-    border-bottom: 3px solid #c4557a;
-    background: #fff8fb;
-  }
+.role-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: #fdf0f7;
+  padding: 6px;
+  border-radius: 16px;
+}
 
-  .role-tab:hover:not(.active) { color: #c4557a; background: #fff8fb; }
+.role-option {
+  flex: 1;
+  cursor: pointer;
+}
 
-  /* ── FORM BODY ── */
-  .form-body {
-    padding: 32px 36px 36px;
-  }
+.role-option input[type="radio"] {
+  display: none;
+}
 
-  .form-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: #333;
-    text-align: center;
-    margin-bottom: 28px;
-  }
+.role-btn {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #888;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
 
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
+.role-option input[type="radio"]:checked + .role-btn {
+  background: white;
+  color: #c4557a;
+  box-shadow: 0 2px 8px rgba(180, 80, 130, 0.15);
+}
 
-  .form-grid .full { grid-column: 1 / -1; }
+.form-group {
+  margin-bottom: 16px;
+  text-align: right;
+}
 
-  /* Input */
-  .fi {
-    width: 100%;
-    background: #fdf0f7;
-    border: 1.5px solid transparent;
-    border-radius: 12px;
-    padding: 13px 16px;
-    font-size: 15px;
-    font-family: inherit;
-    color: #444;
-    text-align: right;
-    outline: none;
-    transition: all 0.2s;
-  }
-  .fi::placeholder { color: #cbb4c4; }
-  .fi:focus { border-color: #e8b4ca; background: white; }
-  .fi.err { border-color: #f0a0a0; background: #fff8f8; }
-  .fi.ok  { border-color: #a8d8b0; }
+.fi {
+  width: 100%;
+  background: #fdf0f7;
+  border: 1.5px solid transparent;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #444;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
 
-  .ferr {
-    font-size: 12px;
-    color: #d06060;
-    margin-top: 4px;
-    display: none;
-  }
-  .ferr.show { display: block; }
+.fi:focus {
+  border-color: #e8b4ca;
+  background: white;
+}
 
-  /* Textarea */
-  textarea.fi {
-    resize: none;
-    height: 90px;
-    line-height: 1.5;
-  }
+.fi.invalid {
+  border-color: #d32f2f !important;
+  background-color: #fff0f0 !important;
+}
 
-  /* Counter */
-  .counter-wrap {
-    background: #fdf0f7;
-    border-radius: 12px;
-    padding: 13px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.error-msg {
+  color: #d32f2f;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 6px;
+  padding-right: 4px;
+  display: none;
+}
 
-  .counter-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: #555;
-  }
+/* ── עיצוב אזור משפחה: מונה ילדים ── */
+.counter-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fdf0f7;
+  border-radius: 14px;
+  padding: 12px 16px;
+}
 
-  .counter-controls {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
+.counter-label {
+  color: #444;
+  font-size: 15px;
+  font-weight: 600;
+}
 
-  .cbtn {
-    width: 30px; height: 30px;
-    border-radius: 8px;
-    border: none;
-    font-size: 20px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    transition: background 0.2s;
-  }
+.counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
-  .cbtn-minus { background: #f0c0d8; color: white; }
-  .cbtn-minus:hover { background: #e090b8; }
-  .cbtn-plus  { background: #c4557a; color: white; }
-  .cbtn-plus:hover  { background: #a83d62; }
+.cbtn {
+  background: white;
+  border: 1.5px solid #e8b4ca;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  color: #c4557a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
 
-  .cnum {
-    font-size: 17px;
-    font-weight: 800;
-    color: #333;
-    min-width: 22px;
-    text-align: center;
-  }
+.cbtn:hover {
+  background: #fde4f0;
+}
 
-  /* Select */
-  .fselect-wrap { position: relative; }
-  .fselect {
-    width: 100%;
-    background: #fdf0f7;
-    border: 1.5px solid transparent;
-    border-radius: 12px;
-    padding: 13px 16px;
-    font-size: 15px;
-    font-family: inherit;
-    color: #555;
-    text-align: right;
-    outline: none;
-    appearance: none;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .fselect:focus { border-color: #e8b4ca; background: white; }
-  .fselect-arrow {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 11px;
-    color: #cbb4c4;
-    pointer-events: none;
-  }
+.cnum {
+  font-size: 16px;
+  font-weight: bold;
+  color: #222;
+  min-width: 15px;
+  text-align: center;
+}
 
-  /* Submit */
-  .btn-submit {
-    width: 100%;
-    background: #e091b0;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    margin-top: 6px;
-    transition: background 0.2s;
-  }
-  .btn-submit:hover { background: #c4557a; }
-  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+/* ── כפתור העלאת קובץ מותאם אישית ── */
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff0f6;
+  border: 1.5px dashed #e8b4ca;
+  border-radius: 14px;
+  padding: 12px;
+  color: #8a3050;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 
-  /* Success */
-  .success-msg {
-    background: #edf7ee;
-    color: #3a8a50;
-    border-radius: 12px;
-    padding: 14px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 700;
-    display: none;
-    margin-top: 12px;
-  }
+.custom-file-upload:hover {
+  background: #fde4f0;
+  border-color: #c4557a;
+}
 
-  .global-err {
-    background: #fff0f0;
-    color: #d06060;
-    border-radius: 12px;
-    padding: 12px;
-    text-align: center;
-    font-size: 14px;
-    display: none;
-    margin-top: 8px;
-  }
+.custom-file-upload input[type="file"] {
+  display: none;
+}
 
-  /* Divider */
-  .section-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #d4a0b8;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 4px 0 2px;
-    grid-column: 1 / -1;
-  }
+.file-name-indicator {
+  font-size: 13px;
+  color: #888;
+  margin-top: 6px;
+  padding-right: 4px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 
-  /* Login link */
-  .login-link {
-    text-align: center;
-    margin-top: 18px;
-    font-size: 14px;
-    color: #aaa;
-  }
-  .login-link a { color: #c4557a; font-weight: 700; text-decoration: none; }
-  .login-link a:hover { text-decoration: underline; }
+/* ── כפתור שליחה ותחתית ── */
+.btn-submit {
+  width: 100%;
+  background: #e091b0;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background 0.2s;
+}
 
-  /* Sitter-only fields */
-  #sitterFields { display: none; }
-  #sitterFields.show { display: contents; }
+.btn-submit:hover {
+  background: #c4557a;
+}
 
-/* Responsive: single column form on narrow screens */
-@media (max-width: 600px) {
-  .form-grid { grid-template-columns: 1fr; }
-  .card { max-width: 100%; }
+.register-footer {
+  margin-top: 25px;
+  font-size: 15px;
+  color: #666;
+}
+
+.register-footer a {
+  color: #c4557a;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.register-footer a:hover {
+  text-decoration: underline;
 }

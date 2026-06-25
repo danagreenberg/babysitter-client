@@ -1,0 +1,137 @@
+/* ================================================
+   login.css
+   עיצוב עמוד התחברות
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Heebo', Arial, sans-serif;
+  direction: rtl;
+  background: #fdf8fb; /* רקע ורדרד עדין כמו בשאר האתר */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ── כרטיסיית ההתחברות ── */
+.login-wrapper {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-card {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(180, 80, 130, 0.1);
+  text-align: center;
+}
+
+/* ── כותרות ── */
+.brand-logo {
+  font-size: 24px;
+  font-weight: 900;
+  color: #c4557a;
+  margin-bottom: 20px;
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #222;
+  margin: 0 0 8px 0;
+}
+
+.login-subtitle {
+  font-size: 15px;
+  color: #777;
+  margin: 0 0 30px 0;
+}
+
+/* ── טפסים ושדות קלט ── */
+.form-group {
+  margin-bottom: 18px;
+  text-align: right;
+}
+
+.fi {
+  width: 100%;
+  background: #fdf0f7;
+  border: 1.5px solid transparent;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #444;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.fi:focus {
+  border-color: #e8b4ca;
+  background: white;
+}
+
+/* המחלקה שנוספת כשהאימייל לא תקין */
+.fi.invalid {
+  border-color: #d32f2f !important;
+  background-color: #fff0f0 !important;
+}
+
+/* הודעת השגיאה עצמה */
+.error-msg {
+  color: #d32f2f;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 6px;
+  padding-right: 4px;
+  display: none; /* מוסתרת כברירת מחדל */
+}
+
+/* ── כפתור התחברות ── */
+.btn-submit {
+  width: 100%;
+  background: #e091b0;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover {
+  background: #c4557a;
+}
+
+/* ── תחתית העמוד (קישור להרשמה) ── */
+.login-footer {
+  margin-top: 25px;
+  font-size: 15px;
+  color: #666;
+}
+
+.login-footer a {
+  color: #c4557a;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.login-footer a:hover {
+  color: #a83d62;
+  text-decoration: underline;
+}

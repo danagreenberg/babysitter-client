@@ -1,143 +1,160 @@
 /* ================================================
    register.js
-   הרשמה לשרת – שולח POST ל /api/auth/register
+   לוגיקת הרשמה: ולידציות, בחירת תפקיד, מונה ילדים ושליחה
    ================================================ */
 
 const API_URL = 'http://localhost:3000';
 
-let role       = 'family';
-let childCount = 3;
+document.addEventListener('DOMContentLoaded', () => {
+  const emailInput = document.getElementById('registerEmail');
+  const emailError = document.getElementById('emailError');
+  const fileInput = document.getElementById('registerImg');
+  const fileNameDisplay = document.getElementById('fileNameDisplay');
 
-/* -- בחירת תפקיד -- */
-function setRole(r) {
-  role = r;
-  document.getElementById('tab-family').classList.toggle('active', r === 'family');
-  document.getElementById('tab-sitter').classList.toggle('active', r === 'sitter');
-  document.getElementById('familyFields').style.display = r === 'family' ? 'block' : 'none';
-  document.getElementById('sitterFields').style.display = r === 'sitter' ? 'contents' : 'none';
-  document.getElementById('formTitle').textContent = r === 'family' ? 'הרשמה כמשפחה' : 'הרשמה כבייביסיטר';
-}
+  if (emailInput) {
+    emailInput.addEventListener('input', () => {
+      const emailValue = emailInput.value.trim();
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-/* -- Counter ילדים -- */
-function changeCount(d) {
-  childCount = Math.max(1, Math.min(10, childCount + d));
-  document.getElementById('childCount').textContent = childCount;
-}
-
-/* -- פורמט טלפון -- */
-function fmtPhone(el) {
-  let v = el.value.replace(/\D/g, '');
-  if (v.length > 3) v = v.slice(0, 3) + '-' + v.slice(3);
-  if (v.length > 11) v = v.slice(0, 11);
-  el.value = v;
-}
-
-/* -- ולידציה לשדה בודד -- */
-function vf(id) {
-  const el  = document.getElementById(id);
-  const err = document.getElementById(id + '-e');
-  if (!el) return true;
-
-  const val = el.value.trim();
-  let ok = false;
-
-  switch (id) {
-    case 'fullName':   ok = val.length >= 2; break;
-    case 'phone':      ok = /^05\d-?\d{7}$/.test(val.replace(/\s/g, '')); break;
-    case 'email':      ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val); break;
-    case 'address':    ok = val.length >= 3; break;
-    case 'birthdate': {
-      if (!val) break;
-      const age = Math.floor((Date.now() - new Date(val)) / (365.25 * 24 * 3600 * 1000));
-      ok = age >= 16;
-      break;
-    }
-    case 'experience': ok = val !== ''; break;
-    case 'area':       ok = val !== ''; break;
-    case 'rate':       ok = parseInt(val) >= 30 && parseInt(val) <= 200; break;
-    default: ok = true;
+      if (emailValue === '') {
+        emailInput.classList.remove('invalid');
+        emailError.style.display = 'none';
+      } else if (!emailRegex.test(emailValue)) {
+        emailInput.classList.add('invalid');
+        emailError.style.display = 'block';
+        emailError.textContent = 'אימייל לא תקין';
+      } else {
+        emailInput.classList.remove('invalid');
+        emailError.style.display = 'none';
+      }
+    });
   }
 
-  el.classList.toggle('err', !ok && val !== '');
-  el.classList.toggle('ok',  ok);
-  if (err) err.classList.toggle('show', !ok && val !== '');
-  return ok;
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        fileNameDisplay.textContent = `📁 קובץ נבחר: ${fileInput.files[0].name}`;
+        fileNameDisplay.style.color = '#c4557a';
+      } else {
+        fileNameDisplay.textContent = 'לא נבחרה תמונה';
+        fileNameDisplay.style.color = '#888';
+      }
+    });
+  }
+});
+
+/* ── פונקציה להוספה/הורדה של מספר הילדים ── */
+let currentChildCount = 1; // התיקון: מתחיל מ-1
+
+function changeCount(diff) {
+  currentChildCount += diff;
+  if (currentChildCount < 1) currentChildCount = 1; // מינימום ילד אחד
+  if (currentChildCount > 10) currentChildCount = 10; // מקסימום הגיוני
+  document.getElementById('childCount').textContent = currentChildCount;
 }
 
-/* -- ולידציה מלאה -- */
-function validateAll() {
-  const base   = ['fullName', 'phone', 'email', 'address'];
-  const sitter = ['birthdate', 'experience', 'area', 'rate'];
-  const fields = role === 'sitter' ? [...base, ...sitter] : base;
-  let ok = true;
-  fields.forEach(f => { if (!vf(f)) ok = false; });
-  return ok;
+/* ── פונקציה שמציגה/מסתירה את השדות בהתאם לתפקיד שנבחר ── */
+function toggleRoleFields() {
+  const role = document.querySelector('input[name="userRole"]:checked').value;
+  const sitterFields = document.getElementById('sitterFields');
+  const familyFields = document.getElementById('familyFields');
+  
+  if (role === 'sitter') {
+    sitterFields.style.display = 'flex';
+    familyFields.style.display = 'none';
+  } else {
+    sitterFields.style.display = 'none';
+    familyFields.style.display = 'block';
+  }
 }
 
-/* -- שליחה לשרת -- */
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('regForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+/* ── פונקציית ההרשמה הראשית ── */
+async function register() {
+  const selectedRole = document.querySelector('input[name="userRole"]:checked').value;
 
-    const globalErr  = document.getElementById('globalErr');
-    const successMsg = document.getElementById('successMsg');
-    const submitBtn  = document.getElementById('submitBtn');
+  let requiredFields = [
+    { id: 'registerName', name: 'שם מלא' },
+    { id: 'registerEmail', name: 'אימייל' },
+    { id: 'registerPass', name: 'סיסמה' },
+    { id: 'registerPhone', name: 'טלפון' },
+    { id: 'registerAddress', name: 'כתובת מגורים' }
+  ];
 
-    globalErr.style.display = 'none';
+  if (selectedRole === 'sitter') {
+    requiredFields.push(
+      { id: 'registerAge', name: 'גיל' },
+      { id: 'registerRate', name: 'תעריף' },
+      { id: 'registerExp', name: 'שנות ניסיון' }
+    );
+  }
 
-    if (!validateAll()) {
-      globalErr.textContent   = 'אנא מלא/י את כל השדות הנדרשים';
-      globalErr.style.display = 'block';
-      setTimeout(() => globalErr.style.display = 'none', 3000);
-      return;
-    }
+  let missingFields = [];
 
-    submitBtn.textContent = '⏳ שולח...';
-    submitBtn.disabled    = true;
-
-    const body = {
-      name:     document.getElementById('fullName').value.trim(),
-      phone:    document.getElementById('phone').value.trim(),
-      email:    document.getElementById('email').value.trim(),
-      address:  document.getElementById('address').value.trim(),
-      password: document.getElementById('phone').value.replace(/-/g, ''),
-      role,
-      ...(role === 'family'
-        ? { children: childCount }
-        : {
-            birthdate:  document.getElementById('birthdate').value,
-            experience: document.getElementById('experience').value,
-            area:       document.getElementById('area').value,
-            rate:       parseInt(document.getElementById('rate').value)
-          }
-      )
-    };
-
-    try {
-      const res  = await fetch(`${API_URL}/api/auth/register`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(body)
-      });
-
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error);
-
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('user',  JSON.stringify(data.data.user));
-
-      submitBtn.style.display  = 'none';
-      successMsg.textContent   = `🎉 נרשמת בהצלחה! ברוך הבא ${data.data.user.name}`;
-      successMsg.style.display = 'block';
-
-      setTimeout(() => { window.location.href = 'family-search.html'; }, 2000);
-
-    } catch (err) {
-      submitBtn.textContent   = 'סיום הרשמה';
-      submitBtn.disabled      = false;
-      globalErr.textContent   = err.message || 'שגיאה בהרשמה, נסה שוב';
-      globalErr.style.display = 'block';
-      setTimeout(() => globalErr.style.display = 'none', 4000);
+  requiredFields.forEach(field => {
+    const el = document.getElementById(field.id);
+    if (!el.value.trim()) {
+      missingFields.push(field.name);
+      el.style.borderColor = '#d32f2f'; 
+      el.style.backgroundColor = '#fff0f0';
+    } else {
+      el.style.borderColor = ''; 
+      el.style.backgroundColor = '';
     }
   });
-});
+
+  const fileInput = document.getElementById('registerImg');
+  if (fileInput.files.length === 0) {
+    missingFields.push('תמונת פרופיל');
+  }
+
+  if (missingFields.length > 0) {
+    alert('לא ניתן להמשיך. חסרים השדות הבאים:\n• ' + missingFields.join('\n• '));
+    return;
+  }
+
+  const emailInput = document.getElementById('registerEmail');
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(emailInput.value.trim())) {
+    alert('כתובת האימייל אינה תקינה.');
+    emailInput.focus();
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('role', selectedRole); 
+    formData.append('name', document.getElementById('registerName').value.trim());
+    formData.append('email', emailInput.value.trim());
+    formData.append('password', document.getElementById('registerPass').value.trim());
+    formData.append('phone', document.getElementById('registerPhone').value.trim());
+    formData.append('address', document.getElementById('registerAddress').value.trim());
+    
+    if (selectedRole === 'family') {
+      formData.append('children', document.getElementById('childCount').textContent);
+    } else if (selectedRole === 'sitter') {
+      formData.append('age', document.getElementById('registerAge').value.trim());
+      formData.append('rate', document.getElementById('registerRate').value.trim());
+      formData.append('experience', document.getElementById('registerExp').value.trim());
+    }
+    
+    formData.append('img', fileInput.files[0]); 
+
+    const res = await fetch(`${API_URL}/api/auth/register`, {
+      method: 'POST',
+      body: formData 
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || 'שגיאה בתהליך ההרשמה');
+    }
+
+    alert('החשבון נוצר בהצלחה! מעבר לעמוד ההתחברות...');
+    window.location.href = 'login.html';
+
+  } catch (err) {
+    console.error('שגיאת הרשמה:', err);
+    alert(err.message);
+  }
+}
