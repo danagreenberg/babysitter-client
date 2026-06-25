@@ -57,6 +57,39 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-box">
+      <div class="modal-title">בקשת הזמנה מ<span id="modalSitterName">הבייביסיטר</span></div>
+      <div class="modal-text">בחרי תאריך ושעות למשמרת המבוקשת:</div>
+      
+      <div class="form-group">
+        <label>תאריך:</label>
+        <input type="date" id="bookDate" class="fi">
+      </div>
+      <div class="form-group" style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+          <label>שעת התחלה:</label>
+          <input type="time" id="bookStartTime" class="fi">
+        </div>
+        <div style="flex: 1;">
+          <label>שעת סיום:</label>
+          <input type="time" id="bookEndTime" class="fi">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-btn modal-cancel" onclick="closeBookingModal()">ביטול</button>
+        <button class="modal-btn modal-confirm" onclick="submitBookingRequest()">שלח בקשה</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/sitter-profile.js"></script>
+</body>
+</html>
+
   <div class="toast" id="toast"></div>
 
   <script src="js/sitter-profile.js"></script>

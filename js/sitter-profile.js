@@ -81,9 +81,78 @@ async function loadProfile() {
    פונקציות כפתורים
    ================================================ */
 
+/* ================================================
+   ניהול חלונית בקשת הזמנה (Modal)
+   ================================================ */
+
 function bookSitter() {
-  // העברה למסך המשמרות העתידיות
-  window.location.href = 'upcoming-shifts.html';
+  // מעדכן את שם הבייביסיטר בכותרת החלונית
+  const sitterName = document.getElementById('profName').textContent;
+  document.getElementById('modalSitterName').textContent = sitterName;
+  
+  // מגדיר שהתאריך המינימלי לבחירה יהיה היום
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('bookDate');
+  dateInput.setAttribute('min', today);
+  dateInput.value = today;
+
+  // פתיחת החלונית
+  document.getElementById('bookingModal').classList.add('show');
+}
+
+function closeBookingModal() {
+  document.getElementById('bookingModal').classList.remove('show');
+}
+
+async function submitBookingRequest() {
+  const date = document.getElementById('bookDate').value;
+  const startTime = document.getElementById('bookStartTime').value;
+  const endTime = document.getElementById('bookEndTime').value;
+
+  // ולידציה בסיסית - לוודא שהמשתמש מילא הכל
+  if (!date || !startTime || !endTime) {
+    showToast('❌ נא למלא תאריך, שעת התחלה ושעת סיום.');
+    return;
+  }
+
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sitterId = urlParams.get('id');
+    const token = localStorage.getItem('token'); // טוקן הזיהוי של המשפחה המחוברת
+
+    // המרת התאריך והשעות לפורמט מלא שרתים אוהבים (ISO)
+    const scheduledStart = new Date(`${date}T${startTime}:00`).toISOString();
+    const scheduledEnd = new Date(`${date}T${endTime}:00`).toISOString();
+
+    // שליחת הבקשה לשרת
+    const res = await fetch(`${API_URL}/api/bookings`, {
+      method: 'POST',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        sitterId: sitterId,
+        scheduledStart: scheduledStart,
+        scheduledEnd: scheduledEnd,
+        status: 'pending' // מצב "ממתין לאישור"
+      })
+    });
+
+    const data = await res.json();
+    
+    if (!data.success) {
+      throw new Error(data.error || 'שגיאה ביצירת הבקשה');
+    }
+
+    // סגירת החלונית והצגת הודעת הצלחה
+    closeBookingModal();
+    showToast('✅ הבקשה נשלחה! ממתין לאישור הבייביסיטר.');
+
+  } catch (err) {
+    console.error('שגיאת שליחה:', err);
+    showToast('❌ שגיאה: ' + err.message);
+  }
 }
 
 function callSitter() {
