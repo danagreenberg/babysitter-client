@@ -95,7 +95,10 @@ function closeModal() { document.getElementById('endModal').classList.remove('sh
 
 function confirmEnd() {
   closeModal();
-  
+  // קוד לדוגמה מתוך active-shift.js בזמן סיום משמרת
+localStorage.setItem('currentSitterId', id_shel_ha_babysitter);
+window.location.href = 'shift-summary.html';
+
   // 1. לוקחים את התאריך והשעה המדויקים של הרגע שבו לחצת על הכפתור
   const exactEndTime = new Date().toISOString();
   

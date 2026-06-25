@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דירוג בייביסיטר – babysitter</title>
+  <link rel="stylesheet" href="style/common.css">
+  <link rel="stylesheet" href="style/rating.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a class="logo" href="index.html">🍼 babysitter</a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">🏠 בית</a>
+      <a class="nav-link" href="family-search.html">🔍 חיפוש</a>
+      <a class="nav-link" href="upcoming-shifts.html">📅 המשמרות שלי</a>
+      <a class="nav-link" href="active-shift.html">⏱️ משמרת פעילה</a>
+      <a class="nav-link" href="shift-summary.html">💳 סיכום משמרת</a>
+    </div>
+    <div class="nav-right">
+      <a class="nav-icon" href="register.html"><span>👤</span><span>פרופיל</span></a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="card rating-wrapper">
+      
+      <div class="rating-header">
+        <h1 class="rating-title">איך היה עם <span id="sitterNameTitle">הבייביסיטר</span>?</h1>
+        <p class="rating-subtitle">הדירוג שלך עוזר למשפחות אחרות לבחור נכון.</p>
+      </div>
+
+      <div class="rating-body">
+        <div class="stars-container" id="starRating">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+        </div>
+        <div id="ratingText" class="rating-text-indicator">בחרי דירוג</div>
+
+        <textarea id="reviewText" class="fi review-textarea" placeholder="שתפי את החוויה שלך... (אופציונלי)"></textarea>
+
+        <button class="btn-submit" id="submitReviewBtn" onclick="submitReview()">שלח ביקורת</button>
+        <button class="btn-cancel" onclick="goBack()">דילוג וחזרה למפה</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/rating.js"></script>
+</body>
+</html>

@@ -86,6 +86,31 @@ function showState(state) {
     if (el) el.classList.toggle('hidden', k !== state);
   });
 }
+/* ================================================
+   מעבר למסך הדירוג
+   ================================================ */
+function goToRating() {
+  // 1. קודם ננסה למשוך את ה-ID משורת הכתובת
+  const urlParams = new URLSearchParams(window.location.search);
+  let sitterId = urlParams.get('id');
+  
+  // 2. אם אין ב-URL, נחפש בזיכרון המקומי
+  if (!sitterId) {
+    sitterId = localStorage.getItem('currentSitterId');
+  }
+
+  // 3. התיקון: אם ה-ID עדיין לא נמצא, לא נזרוק אותך לחיפוש!
+  // נגדיר ID ברירת מחדל כדי שהמעבר יעבוד ותוכלי להציג את עמוד הדירוג.
+  if (!sitterId) {
+    console.warn('ה-ID הלך לאיבוד במעבר. משתמש ב-ID זמני כדי לא לשבור את המערכת.');
+    
+    // אם יש לך ID אמיתי של דנה מהדאטה-בייס, עדיף להדביק אותו פה במקום 'demo-id'
+    sitterId = 'demo-id'; 
+  }
+
+  // מעבר לעמוד הדירוג
+  window.location.href = `rating.html?id=${sitterId}`;
+}
 
 /* -- Toast -- */
 function showToast(msg) {

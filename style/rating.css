@@ -1,0 +1,145 @@
+/* ================================================
+   rating.css
+   עיצוב עמוד דירוג בייביסיטר
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: 'Heebo', Arial, sans-serif;
+  direction: rtl;
+  background: #fdf8fb;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.rating-wrapper {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(180, 80, 130, 0.1);
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  text-align: center;
+}
+
+.rating-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.rating-title span {
+  color: #c4557a;
+}
+
+.rating-subtitle {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 30px;
+}
+
+/* ── מערכת הכוכבים ── */
+.stars-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: row-reverse; /* טריק ל-RTL כדי שהכוכבים יתמלאו נכון */
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.star {
+  font-size: 45px;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
+
+/* אפקט מילוי בהובר (מרחף על כוכב ממלא גם את הקודמים לו) */
+.star:hover,
+.star:hover ~ .star,
+.star.active,
+.star.active ~ .star {
+  color: #ffb300;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.rating-text-indicator {
+  font-size: 15px;
+  font-weight: 600;
+  color: #aaa;
+  margin-bottom: 25px;
+  height: 20px;
+}
+
+/* ── תיבת טקסט ── */
+.review-textarea {
+  width: 100%;
+  background: #fdf0f7;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #444;
+  resize: none;
+  height: 120px;
+  margin-bottom: 25px;
+  transition: all 0.2s;
+}
+
+.review-textarea:focus {
+  border-color: #e8b4ca;
+  background: white;
+  outline: none;
+}
+
+/* ── כפתורים ── */
+.btn-submit {
+  width: 100%;
+  background: #e091b0;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 12px;
+}
+
+.btn-submit:hover {
+  background: #c4557a;
+}
+
+.btn-cancel {
+  width: 100%;
+  background: transparent;
+  color: #888;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.btn-cancel:hover {
+  color: #c4557a;
+  text-decoration: underline;
+}
