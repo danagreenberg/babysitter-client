@@ -1,6 +1,6 @@
 /* ================================================
    sitter-profile.js
-   טוען את נתוני הבייביסיטר ומנהל את הפעולות בעמוד
+   טוען את נתוני הבייביסיטר, מחשב מרחק מול API חיצוני ומנהל פעולות
    ================================================ */
 
 const API_URL = 'http://localhost:3000';
@@ -8,15 +8,16 @@ const API_URL = 'http://localhost:3000';
 document.addEventListener('DOMContentLoaded', loadProfile);
 
 async function loadProfile() {
-  // קריאת ה-ID של הבייביסיטר משורת הכתובת (URL)
   const urlParams = new URLSearchParams(window.location.search);
   const sitterId = urlParams.get('id');
 
   if (!sitterId) {
-    alert('לא נבחרה בייביסיטר, חוזר למפה.');
-    window.location.href = 'family-search.html';
+    showToast('❌ לא נבחרה בייביסיטר, חוזר לחיפוש...');
+    setTimeout(() => window.location.href = 'family-search.html', 2000);
     return;
   }
+
+  showLoadingState(true);
 
   try {
     const res = await fetch(`${API_URL}/api/sitters`);
@@ -24,7 +25,6 @@ async function loadProfile() {
     
     if (!data.success) throw new Error(data.error);
     
-    // מציאת הבייביסיטר הספציפית לפי ה-ID
     const sitter = data.data.find(s => s.id === sitterId || s._id === sitterId);
     
     if (!sitter) throw new Error('הבייביסיטר לא נמצאה במסד הנתונים');
@@ -39,7 +39,6 @@ async function loadProfile() {
       document.getElementById('profImg').src = sitter.img;
     }
 
-    // הזרקת תג מאומת (Verified)
     const verifiedBadge = document.getElementById('profVerified');
     if (sitter.verified === true) {
       verifiedBadge.style.display = 'inline-flex';
@@ -47,56 +46,110 @@ async function loadProfile() {
       verifiedBadge.style.display = 'none';
     }
 
-    // הזרקת ביקורות דינמיות
-    const reviewsContainer = document.getElementById('profReviews');
-    
-    if (sitter.reviews && Array.isArray(sitter.reviews) && sitter.reviews.length > 0) {
-      reviewsContainer.innerHTML = sitter.reviews.map((rev, index) => {
-        // חישוב הכוכבים
-        const rating = Math.round(rev.rating || 5);
-        const starsHtml = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-        
-        // קו מפריד לביקורת האמצעית (כדי לשמור על עיצוב 3 עמודות)
-        const centerClass = index === 1 ? 'center-review' : '';
+    renderReviews(sitter.reviews);
 
-        return `
-          <div class="review-box ${centerClass}">
-            <div class="stars">${starsHtml}</div>
-            <div class="review-text">${rev.text || ''}</div>
-          </div>
-        `;
-      }).join('');
-      
+    // --- קריאה ל-API חיצוני לחישוב מרחק בצורה דינמית ---
+    const token = localStorage.getItem('token');
+    
+    if (token && sitter.lat && sitter.lng) {
+      try {
+        const userRes = await fetch(`${API_URL}/api/auth/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const userData = await userRes.json();
+
+        if (userData.success && userData.data && userData.data.lat && userData.data.lng) {
+          const familyLat = userData.data.lat;
+          const familyLng = userData.data.lng;
+          
+          await calculateDistance(familyLat, familyLng, sitter.lat, sitter.lng);
+        } else {
+          // חסרים נתוני מיקום של המשפחה ב-DB
+          showNoDistanceData();
+        }
+      } catch (err) {
+        console.error('שגיאה בשליפת נתוני המשפחה:', err);
+        showNoDistanceData();
+      }
     } else {
-      reviewsContainer.innerHTML = '<div style="width: 100%; text-align: center; color: #888; padding: 20px 0;">אין עדיין ביקורות לבייביסיטר זו.</div>';
+      // חסר טוקן או חסרים נתוני מיקום של הבייביסיטר
+      showNoDistanceData();
     }
 
   } catch (err) {
     console.error('שגיאה:', err);
-    alert('אירעה שגיאה בטעינת הפרופיל: ' + err.message);
+    showToast('❌ אירעה שגיאה בטעינת הפרופיל: ' + err.message);
+  } finally {
+    showLoadingState(false);
+  }
+}
+
+// פונקציית ה-API החיצוני (OSRM)
+async function calculateDistance(fLat, fLng, sLat, sLng) {
+  try {
+    const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${fLng},${fLat};${sLng},${sLat}?overview=false`);
+    const data = await res.json();
+
+    if (data.code === 'Ok' && data.routes.length > 0) {
+      const distanceKm = (data.routes[0].distance / 1000).toFixed(1);
+      const durationMin = Math.round(data.routes[0].duration / 60);
+      
+      const distEl = document.getElementById('profDistance');
+      if (distEl) {
+        distEl.innerHTML = `📍 מרחק מהבית שלך: <strong>${distanceKm} ק"מ</strong> (כ-${durationMin} דקות נסיעה)`;
+        distEl.style.display = 'block';
+      }
+    } else {
+      showNoDistanceData();
+    }
+  } catch (err) {
+    console.error('שגיאה בחישוב מרחק מול ה-API החיצוני:', err);
+    showNoDistanceData();
+  }
+}
+
+// הודעה כשהנתונים חסרים
+function showNoDistanceData() {
+  const distEl = document.getElementById('profDistance');
+  if (distEl) {
+    distEl.innerHTML = `📍 מרחק מהבית שלך: <span style="color: #777; font-weight: 500;">אין נתונים להצגה</span>`;
+    distEl.style.display = 'block';
+  }
+}
+
+function renderReviews(reviews) {
+  const reviewsContainer = document.getElementById('profReviews');
+  if (reviews && Array.isArray(reviews) && reviews.length > 0) {
+    reviewsContainer.innerHTML = reviews.map((rev, index) => {
+      const rating = Math.round(rev.rating || 5);
+      const starsHtml = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+      const centerClass = index === 1 ? 'center-review' : '';
+
+      return `
+        <div class="review-box ${centerClass}">
+          <div class="stars">${starsHtml}</div>
+          <div class="review-text">${rev.text || ''}</div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    reviewsContainer.innerHTML = '<div style="width: 100%; text-align: center; color: #888; padding: 20px 0;">אין עדיין ביקורות לבייביסיטר זו.</div>';
   }
 }
 
 /* ================================================
-   פונקציות כפתורים
-   ================================================ */
-
-/* ================================================
-   ניהול חלונית בקשת הזמנה (Modal)
+   פונקציות כפתורים ומודאלים (ללא alert)
    ================================================ */
 
 function bookSitter() {
-  // מעדכן את שם הבייביסיטר בכותרת החלונית
   const sitterName = document.getElementById('profName').textContent;
   document.getElementById('modalSitterName').textContent = sitterName;
   
-  // מגדיר שהתאריך המינימלי לבחירה יהיה היום
   const today = new Date().toISOString().split('T')[0];
   const dateInput = document.getElementById('bookDate');
   dateInput.setAttribute('min', today);
   dateInput.value = today;
 
-  // פתיחת החלונית
   document.getElementById('bookingModal').classList.add('show');
 }
 
@@ -109,7 +162,6 @@ async function submitBookingRequest() {
   const startTime = document.getElementById('bookStartTime').value;
   const endTime = document.getElementById('bookEndTime').value;
 
-  // ולידציה בסיסית - לוודא שהמשתמש מילא הכל
   if (!date || !startTime || !endTime) {
     showToast('❌ נא למלא תאריך, שעת התחלה ושעת סיום.');
     return;
@@ -118,13 +170,11 @@ async function submitBookingRequest() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const sitterId = urlParams.get('id');
-    const token = localStorage.getItem('token'); // טוקן הזיהוי של המשפחה המחוברת
+    const token = localStorage.getItem('token');
 
-    // המרת התאריך והשעות לפורמט מלא שרתים אוהבים (ISO)
     const scheduledStart = new Date(`${date}T${startTime}:00`).toISOString();
     const scheduledEnd = new Date(`${date}T${endTime}:00`).toISOString();
 
-    // שליחת הבקשה לשרת
     const res = await fetch(`${API_URL}/api/bookings`, {
       method: 'POST',
       headers: { 
@@ -135,17 +185,13 @@ async function submitBookingRequest() {
         sitterId: sitterId,
         scheduledStart: scheduledStart,
         scheduledEnd: scheduledEnd,
-        status: 'pending' // מצב "ממתין לאישור"
+        status: 'pending'
       })
     });
 
     const data = await res.json();
-    
-    if (!data.success) {
-      throw new Error(data.error || 'שגיאה ביצירת הבקשה');
-    }
+    if (!data.success) throw new Error(data.error || 'שגיאה ביצירת הבקשה');
 
-    // סגירת החלונית והצגת הודעת הצלחה
     closeBookingModal();
     showToast('✅ הבקשה נשלחה! ממתין לאישור הבייביסיטר.');
 
@@ -156,13 +202,21 @@ async function submitBookingRequest() {
 }
 
 function callSitter() {
-  // הפעלת ה-Toast במקום alert רגיל
   showToast('📞 מתקשר לבייביסיטר...');
 }
 
 /* ================================================
-   פונקציית עזר להצגת התראות צפות (Toast)
+   פונקציות עזר: מצב טעינה והתראות צפות (Toast)
    ================================================ */
+
+function showLoadingState(isLoading) {
+  const loader = document.getElementById('profileLoader');
+  const content = document.getElementById('profileContent'); 
+  
+  if (loader) loader.style.display = isLoading ? 'flex' : 'none';
+  if (content) content.style.opacity = isLoading ? '0.3' : '1';
+}
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   if (!t) return;
