@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>הבקשות שלי – babysitter</title>
+  <link rel="stylesheet" href="style/common.css">
+  <link rel="stylesheet" href="style/register.css">
+  <link rel="stylesheet" href="style/profile.css">
+  <link rel="stylesheet" href="style/shifts.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a class="logo" href="index.html">🍼 babysitter</a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">🏠 בית</a>
+      <a class="nav-link only-family" href="family-search.html">🔍 חיפוש בייביסיטר</a>
+      <a class="nav-link only-sitter" href="my-requests.html">🔔 הבקשות שלי</a>
+      <a class="nav-link" href="upcoming-shifts.html">📅 המשמרות שלי</a>
+    </div>
+    <div class="nav-right nav-actions">
+      <a class="nav-icon" href="profile.html"><span>👤</span><span>פרופיל</span></a>
+      <a class="nav-icon logout-link" href="#" onclick="logoutUser()"><span>🚪</span><span>התנתקות</span></a>
+    </div>
+  </nav>
+
+  <div class="register-wrapper">
+    <div class="register-card">
+      <div class="brand-logo">🔔 הבקשות שלי</div>
+      <p class="register-subtitle">משפחות שביקשו להזמין אותך למשמרת וממתינות לתשובתך</p>
+
+      <div id="requestsList">
+        <div class="empty-state">⏳ טוען בקשות...</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast-message"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/my-requests.js"></script>
+</body>
+</html>

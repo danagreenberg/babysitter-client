@@ -4,6 +4,21 @@
    ================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
 
+/* ================================================
+   Role-Based UI Rules
+   מסליק אלמנטים בהתאם לתפקיד המשתמש המחובר
+   ================================================ */
+
+/* כאשר מחוברת בייביסיטר - נסתיר כל מה ששייך רק למשפחות */
+body.role-sitter .only-family {
+    display: none !important;
+}
+
+/* כאשר מחוברת משפחה - נסתיר כל מה ששייך רק לבייביסיטר */
+body.role-family .only-sitter {
+    display: none !important;
+}
+
 /* ── NAVBAR ── */
 .navbar {
   background: white;

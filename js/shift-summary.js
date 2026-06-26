@@ -1,6 +1,6 @@
 /* ================================================
    shift-summary.js
-   חישוב זמן משמרת, תשלום דינמי, ונעילת המסך
+   חישוב זמן משמרת, תשלום דינמי, ונעילת המסך ללא CSS פנימי
    ================================================ */
 
 const API_URL = 'http://localhost:3000';
@@ -12,63 +12,47 @@ async function loadSummaryData() {
   const startTimeIso = localStorage.getItem('actualStartTime');
   const endTimeIso = localStorage.getItem('actualEndTime');
 
-  const backBtn = document.querySelector('.back-btn');
+  const summaryContent = document.getElementById('summaryContent');
+  const emptySummary = document.getElementById('emptySummary');
 
-  // אם אין משמרת לתשלום (מצב ריק)
-  if (!sitterId || !endTimeIso) {
-    if (backBtn) backBtn.style.display = 'inline-block'; // משאיר את הכפתור אם סתם נכנסו לעמוד
-    
-    document.querySelector('.card-body').innerHTML = `
-      <div style="text-align: center; padding: 40px 20px;">
-        <div style="font-size: 55px; margin-bottom: 15px;">🤷‍♀️</div>
-        <h3 style="color: #c4557a; font-size: 24px; font-weight: 800; margin-bottom: 12px;">אין משמרת לסיכום</h3>
-        <p style="color: #777; line-height: 1.6; font-size: 16px; margin-bottom: 30px;">
-          לא נמצאו נתוני משמרת שהסתיימה כרגע.<br>
-          כדי לראות סיכום ולשלם, יש קודם לסיים משמרת פעילה.
-        </p>
-        <button style="background: #e091b0; color: white; border: none; padding: 14px 28px; border-radius: 14px; font-size: 16px; font-weight: bold; cursor: pointer; font-family: inherit;" onclick="window.location.href='upcoming-shifts.html'">
-          מעבר למשמרות שלי
-        </button>
-      </div>
-    `;
-    return; 
+  // אם חסר מידע למשמרת - נציג את הסטייט הריק
+  if (!sitterId || !endTimeIso || !startTimeIso) {
+    summaryContent.classList.add('hide-element');
+    emptySummary.classList.remove('hide-element');
+    return;
   }
 
-  // התיקון: אם יש משמרת לתשלום, מעלימים את כפתור החזור/איקס כדי למנוע "בריחה"!
-  if (backBtn) {
-    backBtn.style.display = 'none';
-  }
+  // הכל תקין - נציג את כרטיסיית הסיכום
+  emptySummary.classList.add('hide-element');
+  summaryContent.classList.remove('hide-element');
 
   try {
     const res = await fetch(`${API_URL}/api/sitters`);
     const data = await res.json();
-    
-    const sitter = data.data.find(s => s.id === sitterId || s._id === sitterId); 
-    if (!sitter) throw new Error('הבייביסיטר לא נמצאה במסד הנתונים');
+    if (!data.success) throw new Error(data.error);
 
-    // חישובי זמנים
+    const sitter = data.data.find(s => s.id === sitterId || s._id === sitterId);
+    if (!sitter) throw new Error('בייביסיטר לא נמצאה במסד הנתונים');
+
     const start = new Date(startTimeIso);
     const end = new Date(endTimeIso);
-
-    const diffMs = end.getTime() - start.getTime();
-    const diffMins = Math.max(1, Math.round(diffMs / 60000)); 
     
+    // חישוב זמנים
+    const diffMs = end - start;
+    const diffMins = Math.floor(diffMs / 60000);
     const hours = Math.floor(diffMins / 60);
     const mins = diffMins % 60;
     
-    const durationText = `${hours} שעות ו-${mins} דקות`;
-
+    const durationText = hours > 0 ? `${hours} שעות ו-${mins} דקות` : `${mins} דקות`;
+    
     // חישוב תשלום
-    const rate = sitter.rate || 0;
+    const rate = Number(sitter.rate) || 0;
     const totalCost = Math.round((diffMins / 60) * rate);
 
-    // הזרקה ל-HTML
-    document.getElementById('sitterNameSumm').textContent = sitter.name;
+    // הזרקה ל-DOM
     document.getElementById('shiftDateSumm').textContent = start.toLocaleDateString('he-IL');
-    
     document.getElementById('shiftStartSumm').textContent = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('shiftEndSumm').textContent = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
-    
     document.getElementById('shiftDurationSumm').textContent = durationText;
     document.getElementById('shiftRateSumm').textContent = `₪${rate}/שעה`;
     document.getElementById('shiftTotalSumm').textContent = `₪${totalCost}`;
@@ -84,7 +68,7 @@ async function loadSummaryData() {
 }
 
 /* ================================================
-   פעולות תשלום וסיום
+   פעולות תשלום וסיום (זמין למשפחות בלבד בזכות ה-CSS)
    ================================================ */
 
 function payAndFinish(method) {
@@ -94,6 +78,7 @@ function payAndFinish(method) {
     showToast('💵 התשלום התקבל בהצלחה');
   }
   
+  // אחרי שנייה וחצי עוברים לדירוג
   setTimeout(() => {
     goToRating();
   }, 1500);
@@ -110,16 +95,15 @@ function goToRating() {
   if (sitterId) {
     window.location.href = `rating.html?id=${sitterId}`;
   } else {
-    window.location.href = 'index.html';
+    window.location.href = 'upcoming-shifts.html';
   }
 }
 
-/* ── Toast ── */
 function showToast(msg) {
   const t = document.getElementById('toast');
   if (!t) return;
   t.textContent = msg;
-  t.style.display = 'block';
+  t.classList.add('show-toast');
   clearTimeout(window._tt);
-  window._tt = setTimeout(() => t.style.display = 'none', 2500);
+  window._tt = setTimeout(() => t.classList.remove('show-toast'), 2500);
 }

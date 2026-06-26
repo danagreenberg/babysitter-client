@@ -1,157 +1,115 @@
-  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+/* ================================================
+   summary.css
+   עיצוב כרטיסיית סיכום המשמרת, קבלות ומצבי שגיאה
+   ================================================ */
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.summary-card {
+  max-width: 500px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
 
-  body {
-    font-family: 'Heebo', Arial, sans-serif;
-    direction: rtl;
-    background: #fdf8fb;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+.summary-header {
+  text-align: center;
+  border-bottom: 2px dashed #fdf0f7;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
 
-  /* ── PAGE LAYOUT ── */
-  .page {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 20px;
-  }
+.summary-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #fdf0f7;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
 
-  /* ── MAIN CARD ── */
-  .summary-card {
-    background: white;
-    border-radius: 24px;
-    box-shadow: 0 4px 32px rgba(180,80,130,0.1);
-    width: 100%;
-    max-width: 680px;
-    overflow: hidden;
-  }
+.summary-title {
+  font-size: 24px;
+  color: #c4557a;
+  font-weight: 800;
+  margin: 0;
+}
 
-  /* Card header */
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 22px 28px;
-    border-bottom: 1px solid #f5edf2;
-  }
+.summary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
 
-  .back-btn {
-    font-size: 22px; color: #bbb; cursor: pointer;
-    background: none; border: none; line-height: 1;
-    transition: color 0.2s;
-  }
-  .back-btn:hover { color: #c4557a; }
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: #444;
+  border-bottom: 1px solid #f9eef3;
+  padding-bottom: 10px;
+}
 
-  .card-title { font-size: 20px; font-weight: 800; color: #222; }
+.detail-row strong {
+  color: #222;
+  font-size: 18px;
+}
 
-  /* Card body – two columns */
-  .card-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
+.total-row {
+  font-size: 20px;
+  color: #c4557a;
+  font-weight: 800;
+  border-bottom: none;
+  background: #fff0f6;
+  padding: 15px;
+  border-radius: 12px;
+}
 
-  /* Left col: sitter info + shift details */
-  .col-left {
-    padding: 28px 28px 28px 28px;
-    border-left: 1px solid #f5edf2;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-  }
+.summary-actions-title {
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
 
-  /* Right col: payment */
-  .col-right {
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    justify-content: center;
-  }
+/* ההודעה שמוצגת לבייביסיטר בזמן שהמשפחה משלמת */
+.waiting-payment-msg {
+  text-align: center;
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f9eef3;
+  border: 1px dashed #e8b4ca;
+  border-radius: 12px;
+  color: #8a3050;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 1.5;
+}
 
-  /* Sitter row */
-  .sitter-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+/* מצב שבו נכנסים לעמוד ואין משמרת לסיכום */
+.empty-summary {
+  text-align: center;
+  padding: 40px 20px;
+}
 
-  .sitter-avatar {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #f5edf2;
-    background: #f5e0ea;
-    flex-shrink: 0;
-  }
+.empty-summary-icon {
+  font-size: 55px;
+  margin-bottom: 15px;
+}
 
-  .sitter-sub { font-size: 13px; color: #bbb; margin-bottom: 4px; }
-  .sitter-name { font-size: 22px; font-weight: 900; color: #222; }
+.empty-summary-title {
+  color: #c4557a;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
 
-  /* Details box */
-  .details-box {
-    background: #fdf8fb;
-    border-radius: 14px;
-    padding: 18px 20px;
-  }
-
-  .details-title {
-    font-size: 14px; font-weight: 700; color: #333; margin-bottom: 12px;
-  }
-
-  .detail-row {
-    display: flex; gap: 8px; font-size: 14px; color: #555;
-    margin-bottom: 7px; align-items: center;
-  }
-  .detail-row:last-child { margin-bottom: 0; }
-  .detail-lbl { font-weight: 700; color: #333; min-width: 90px; }
-
-  /* Total */
-  .total-box {
-    background: linear-gradient(135deg, #fde8f2, #fdf0f8);
-    border-radius: 14px;
-    padding: 18px 20px;
-    text-align: center;
-  }
-  .total-label { font-size: 14px; color: #aaa; margin-bottom: 6px; }
-  .total-amount { font-size: 32px; font-weight: 900; color: #c4557a; }
-
-  /* Payment section */
-  .pay-title {
-    font-size: 16px; font-weight: 700; color: #333; text-align: center;
-  }
-
-  .pay-btns { display: flex; flex-direction: column; gap: 10px; }
-
-  .pay-btn {
-    background: #d4eaf8; color: #1a5f8a;
-    border: none; border-radius: 12px; padding: 14px;
-    font-size: 15px; font-weight: 700; font-family: inherit;
-    cursor: pointer; transition: background 0.2s; width: 100%;
-  }
-  .pay-btn:hover { background: #b8d8f0; }
-
-  /* Footer */
-  .card-footer {
-    border-top: 1px solid #f5edf2;
-    padding: 16px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 6px;
-    font-size: 14px;
-    color: #bbb;
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-  .card-footer:hover { color: #c4557a; }
-
-/* Responsive: stack the two columns on narrow screens */
-@media (max-width: 640px) {
-  .card-body { grid-template-columns: 1fr; }
-  .col-left { border-left: none; border-bottom: 1px solid #f5edf2; }
+.empty-summary-text {
+  color: #777;
+  line-height: 1.6;
+  font-size: 16px;
+  margin-bottom: 30px;
 }

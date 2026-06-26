@@ -2,93 +2,89 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>סיכום משמרת – babysitter</title>
   <link rel="stylesheet" href="style/common.css">
-  <link rel="stylesheet" href="style/shift-summary.css">
-</head>
+  <link rel="stylesheet" href="style/profile.css"> <link rel="stylesheet" href="style/summary.css"> </head>
 <body>
 
   <nav class="navbar">
     <a class="logo" href="index.html">🍼 babysitter</a>
     <div class="nav-links">
       <a class="nav-link" href="index.html">🏠 בית</a>
-      <a class="nav-link" href="family-search.html">🔍 חיפוש</a>
+      <a class="nav-link only-family" href="family-search.html">🔍 חיפוש בייביסיטר</a>
+      <a class="nav-link only-sitter" href="my-requests.html">🔔 הבקשות שלי</a>
       <a class="nav-link" href="upcoming-shifts.html">📅 המשמרות שלי</a>
-      <a class="nav-link" href="active-shift.html">⏱️ משמרת פעילה</a>
-      <a class="nav-link active" href="shift-summary.html">💳 סיכום משמרת</a>
     </div>
-    <div class="nav-right">
+    <div class="nav-right nav-actions">
       <a class="nav-icon" href="profile.html"><span>👤</span><span>פרופיל</span></a>
+      <a class="nav-icon logout-link" href="#" onclick="logoutUser()"><span>🚪</span><span>התנתקות</span></a>
     </div>
   </nav>
 
-  <div class="page">
-    <div class="summary-card">
+  <div class="main-container">
+    
+    <div id="summaryContent" class="summary-card hide-element">
       
-      <div class="card-header">
-        <button class="back-btn" onclick="window.location.href='index.html'">×</button>
-        <div class="card-title">סיכום משמרת</div>
+      <div class="summary-header">
+        <img id="sitterImgSumm" src="images/default-avatar.png" alt="בייביסיטר" class="summary-avatar">
+        <h1 class="summary-title">סיכום משמרת</h1>
       </div>
 
-      <div class="card-body">
-        
-        <div class="col-left">
-          <div class="sitter-row">
-            <img id="sitterImgSumm" src="images/default-avatar.png" alt="Sitter" class="sitter-avatar">
-            <div>
-              <div class="sitter-sub">הבייביסיטר שלך</div>
-              <div id="sitterNameSumm" class="sitter-name">--</div>
-            </div>
-          </div>
-
-          <div class="details-box">
-            <div class="details-title">פרטי המשמרת</div>
-            <div class="detail-row">
-              <span class="detail-lbl">תאריך:</span>
-              <span id="shiftDateSumm">--/--/----</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-lbl">שעת התחלה:</span>
-              <span id="shiftStartSumm">--:--</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-lbl">שעת סיום:</span>
-              <span id="shiftEndSumm">--:--</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-lbl">סה"כ זמן:</span>
-              <span id="shiftDurationSumm">-- שעות ו--- דקות</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-lbl">תעריף שעתי:</span>
-              <span id="shiftRateSumm">₪--/שעה</span>
-            </div>
-          </div>
+      <div class="summary-details">
+        <div class="detail-row">
+          <span>תאריך:</span>
+          <strong id="shiftDateSumm">--/--/----</strong>
         </div>
-
-        <div class="col-right">
-          <div class="total-box">
-            <div class="total-label">סך הכל לתשלום</div>
-            <div id="shiftTotalSumm" class="total-amount">₪0</div>
-          </div>
-
-          <div class="pay-title">איך תרצי לשלם?</div>
-          <div class="pay-btns">
-            <button class="pay-btn" onclick="payAndFinish('bit')">תשלום ב-Bit</button>
-            <button class="pay-btn" onclick="payAndFinish('cash')">שולם במזומן</button>
-            <button class="pay-btn" style="background: #e091b0; color: white; margin-top: 10px;" onclick="goToRating()">
-              סיום ומעבר לדירוג ⭐
-            </button>
-          </div>
+        <div class="detail-row">
+          <span>שעת התחלה:</span>
+          <strong id="shiftStartSumm">--:--</strong>
         </div>
+        <div class="detail-row">
+          <span>שעת סיום:</span>
+          <strong id="shiftEndSumm">--:--</strong>
+        </div>
+        <div class="detail-row">
+          <span>סה"כ זמן:</span>
+          <strong id="shiftDurationSumm">-- דקות</strong>
+        </div>
+        <div class="detail-row">
+          <span>תעריף לשעה:</span>
+          <strong id="shiftRateSumm">₪--/שעה</strong>
+        </div>
+        <div class="detail-row total-row">
+          <span>סה"כ לתשלום:</span>
+          <strong id="shiftTotalSumm">₪0</strong>
+        </div>
+      </div>
 
+      <div class="only-family">
+        <h3 class="summary-actions-title">סיום ותשלום</h3>
+        <div class="actions-row">
+          <button id="bitPayBtn" class="btn-primary" onclick="payAndFinish('bit')">📱 תשלום ב-Bit</button>
+          <button id="cashPayBtn" class="btn-secondary" onclick="payAndFinish('cash')">💵 שילמתי במזומן</button>
+        </div>
+      </div>
+
+      <div class="only-sitter waiting-payment-msg">
+        📢 המשמרת הסתיימה וסוכמה בהצלחה! הסיכום נשלח למשפחה לצורך ביצוע תשלום ודירוג הפרופיל שלך.
+      </div>
+
+    </div>
+
+    <div id="emptySummary" class="summary-card hide-element">
+      <div class="empty-summary">
+        <div class="empty-summary-icon">🤷‍♀️</div>
+        <h3 class="empty-summary-title">אין משמרת לסיכום</h3>
+        <p class="empty-summary-text">לא נמצאה משמרת פעילה שהסתיימה כעת. ניתן לחזור לעמוד הראשי או לבדוק את היסטוריית המשמרות שלך.</p>
+        <button class="btn-secondary" onclick="window.location.href='upcoming-shifts.html'">חזרה למשמרות שלי</button>
       </div>
     </div>
+
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div id="toast" class="toast-message"></div>
 
+  <script src="js/auth.js"></script>
   <script src="js/shift-summary.js"></script>
 </body>
 </html>

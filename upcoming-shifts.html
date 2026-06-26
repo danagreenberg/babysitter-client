@@ -2,11 +2,11 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>המשמרות שלי – babysitter</title>
-  
+  <title>ניהול משמרות – babysitter</title>
   <link rel="stylesheet" href="style/common.css">
-  <link rel="stylesheet" href="style/upcoming-shifts.css">
+  <link rel="stylesheet" href="style/register.css">
+  <link rel="stylesheet" href="style/profile.css">
+  <link rel="stylesheet" href="style/shifts.css">
 </head>
 <body>
 
@@ -14,54 +14,64 @@
     <a class="logo" href="index.html">🍼 babysitter</a>
     <div class="nav-links">
       <a class="nav-link" href="index.html">🏠 בית</a>
-      <a class="nav-link" href="family-search.html">🔍 חיפוש</a>
-      <a class="nav-link active" href="upcoming-shifts.html">📅 המשמרות שלי</a>
-      <a class="nav-link" href="active-shift.html">⏱️ משמרת פעילה</a>
-      <a class="nav-link" href="shift-summary.html">💳 סיכום משמרת</a>
+      <a class="nav-link only-family" href="family-search.html">🔍 חיפוש בייביסיטר</a>
+      <a class="nav-link only-sitter" href="my-requests.html">🔔 הבקשות שלי</a>
+      <a class="nav-link" href="upcoming-shifts.html">📅 המשמרות שלי</a>
     </div>
-    <div class="nav-right">
+    <div class="nav-right nav-actions">
       <a class="nav-icon" href="profile.html"><span>👤</span><span>פרופיל</span></a>
+      <a class="nav-icon logout-link" href="#" onclick="logoutUser()"><span>🚪</span><span>התנתקות</span></a>
     </div>
   </nav>
 
-  <div class="page">
-    <div class="shifts-wrapper">
-      <h2 class="page-title">ניהול המשמרות שלי</h2>
+  <div class="register-wrapper">
+    <div class="register-card">
+      <div class="brand-logo">📅 ניהול משמרות</div>
+      <h1 class="register-title only-sitter">המשמרות המאושרות שלי</h1>
+      <h1 class="register-title only-family">הבייביסיטרים שלי</h1>
+      <p class="register-subtitle">כאן תוכלי לראות את המשמרות וההיסטוריה שלך</p>
 
-      <div class="acc-section">
-        <button class="acc-header" onclick="toggleAcc('pendingAcc', this)">
-          בקשות ממתינות לאישור <span class="acc-badge" id="pendingCount">0</span> <span class="acc-icon">▼</span>
+      <div class="only-family">
+        <button class="accordion-btn active" onclick="toggleAcc('pendingList', this)">
+          <span>בתהליך אישור (ממתין לתשובה)</span>
+          <span class="acc-badge" id="pendingCount">0</span>
+          <span class="acc-icon">▲</span>
         </button>
-        <div class="acc-body" id="pendingAcc" style="display: none;">
-          <div id="pendingList" class="shifts-list"></div>
-        </div>
+        <div id="pendingList" class="acc-content show-block"></div>
       </div>
 
-      <div class="acc-section">
-        <button class="acc-header active" onclick="toggleAcc('upcomingAcc', this)">
-          משמרות קרובות <span class="acc-badge" id="upcomingCount">0</span> <span class="acc-icon">▲</span>
-        </button>
-        <div class="acc-body" id="upcomingAcc" style="display: block;">
-          <div id="upcomingList" class="shifts-list">
-            <div class="empty-state">⏳ טוען נתונים...</div>
-          </div>
-        </div>
-      </div>
+      <button class="accordion-btn" onclick="toggleAcc('upcomingList', this)">
+        <span class="only-sitter">משמרות קרובות (אושרו)</span>
+        <span class="only-family">בייביסיטר מתוכננת (אושר)</span>
+        <span class="acc-badge" id="upcomingCount">0</span>
+        <span class="acc-icon">▼</span>
+      </button>
+      <div id="upcomingList" class="acc-content"></div>
 
-      <div class="acc-section">
-        <button class="acc-header" onclick="toggleAcc('completedAcc', this)">
-          היסטוריית משמרות <span class="acc-badge" id="completedCount">0</span> <span class="acc-icon">▼</span>
-        </button>
-        <div class="acc-body" id="completedAcc" style="display: none;">
-          <div id="completedList" class="shifts-list"></div>
-        </div>
-      </div>
+      <button class="accordion-btn" onclick="toggleAcc('completedList', this)">
+        <span>היסטוריית משמרות (הסתיימו)</span>
+        <span class="acc-badge" id="completedCount">0</span>
+        <span class="acc-icon">▼</span>
+      </button>
+      <div id="completedList" class="acc-content"></div>
 
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 class="register-title">האם את בטוחה?</h3>
+      <p>פעולה זו תבטל את המשמרת ולא ניתנת לביטול.</p>
+      <div class="nav-actions margin-top-15">
+        <button class="btn-submit" onclick="executeCancel()">כן, בטלי</button>
+        <button class="btn-cancel" onclick="closeConfirmModal()">חזרה</button>
+      </div>
+    </div>
+  </div>
 
+  <div id="toast" class="toast-message"></div>
+
+  <script src="js/auth.js"></script>
   <script src="js/upcoming-shifts.js"></script>
 </body>
 </html>
