@@ -1,9 +1,19 @@
 /* ================================================
    register.js
-   לוגיקת הרשמה: ולידציות, בחירת תפקיד, מונה ילדים ושליחה
+   לוגיקת הרשמה נקייה וללא alert
    ================================================ */
 
 const API_URL = 'http://localhost:3000';
+
+function showModal(title, text) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalText').textContent = text;
+  document.getElementById('msgModal').classList.add('show');
+}
+
+function closeMsgModal() {
+  document.getElementById('msgModal').classList.remove('show');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const emailInput = document.getElementById('registerEmail');
@@ -41,34 +51,34 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // הפעלת הפונקציה בטעינה כדי שהשדות יסתדרו מיד
+  toggleRoleFields();
 });
 
-/* ── פונקציה להוספה/הורדה של מספר הילדים ── */
-let currentChildCount = 1; // התיקון: מתחיל מ-1
+let currentChildCount = 1;
 
 function changeCount(diff) {
   currentChildCount += diff;
-  if (currentChildCount < 1) currentChildCount = 1; // מינימום ילד אחד
-  if (currentChildCount > 10) currentChildCount = 10; // מקסימום הגיוני
+  if (currentChildCount < 1) currentChildCount = 1;
+  if (currentChildCount > 10) currentChildCount = 10;
   document.getElementById('childCount').textContent = currentChildCount;
 }
 
-/* ── פונקציה שמציגה/מסתירה את השדות בהתאם לתפקיד שנבחר ── */
 function toggleRoleFields() {
   const role = document.querySelector('input[name="userRole"]:checked').value;
   const sitterFields = document.getElementById('sitterFields');
   const familyFields = document.getElementById('familyFields');
   
   if (role === 'sitter') {
-    sitterFields.style.display = 'flex';
+    sitterFields.classList.add('show-flex');
     familyFields.style.display = 'none';
   } else {
-    sitterFields.style.display = 'none';
+    sitterFields.classList.remove('show-flex');
     familyFields.style.display = 'block';
   }
 }
 
-/* ── פונקציית ההרשמה הראשית ── */
 async function register() {
   const selectedRole = document.querySelector('input[name="userRole"]:checked').value;
 
@@ -94,11 +104,9 @@ async function register() {
     const el = document.getElementById(field.id);
     if (!el.value.trim()) {
       missingFields.push(field.name);
-      el.style.borderColor = '#d32f2f'; 
-      el.style.backgroundColor = '#fff0f0';
+      el.classList.add('invalid');
     } else {
-      el.style.borderColor = ''; 
-      el.style.backgroundColor = '';
+      el.classList.remove('invalid');
     }
   });
 
@@ -108,14 +116,14 @@ async function register() {
   }
 
   if (missingFields.length > 0) {
-    alert('לא ניתן להמשיך. חסרים השדות הבאים:\n• ' + missingFields.join('\n• '));
+    showModal('חסרים פרטים', 'לא ניתן להמשיך. חסרים השדות הבאים:\n• ' + missingFields.join('\n• '));
     return;
   }
 
   const emailInput = document.getElementById('registerEmail');
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!emailRegex.test(emailInput.value.trim())) {
-    alert('כתובת האימייל אינה תקינה.');
+    showModal('שגיאה', 'כתובת האימייל אינה תקינה.');
     emailInput.focus();
     return;
   }
@@ -147,14 +155,17 @@ async function register() {
     const data = await res.json();
 
     if (!res.ok || !data.success) {
-      throw new Error(data.error || 'שגיאה בתהליך ההרשמה');
+      // אם השרת מחזיר שגיאה (כמו אימייל קיים או חסר נתון)
+      throw new Error(data.error || 'שגיאה בתהליך ההרשמה מול השרת');
     }
 
-    alert('החשבון נוצר בהצלחה! מעבר לעמוד ההתחברות...');
-    window.location.href = 'login.html';
+    showModal('הצלחה!', 'החשבון נוצר בהצלחה! מעבר לעמוד ההתחברות...');
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 2000);
 
   } catch (err) {
     console.error('שגיאת הרשמה:', err);
-    alert(err.message);
+    showModal('שגיאה בהרשמה', err.message);
   }
 }

@@ -15,7 +15,7 @@
       <h1 class="register-title">יצירת חשבון חדש</h1>
       <p class="register-subtitle">הצטרפי לקהילת הבייביסיטרים והמשפחות שלנו</p>
 
-      <form id="registerForm">
+      <form id="registerForm" enctype="multipart/form-data">
         
         <div class="role-selector">
           <label class="role-option">
@@ -33,17 +33,17 @@
         </div>
 
         <div class="form-group">
-          <input class="fi" type="email" id="registerEmail" placeholder="כתובת אימייל" required>
+          <input class="fi" type="email" id="registerEmail" placeholder="כתובת אימייל">
           <div id="emailError" class="error-msg">כתובת אימייל לא תקינה</div>
         </div>
 
         <div class="form-group">
-          <input class="fi" type="password" id="registerPass" placeholder="בחרי סיסמה" required>
+          <input class="fi" type="password" id="registerPass" placeholder="בחרי סיסמה">
         </div>
 
-        <div class="form-group" style="display: flex; gap: 10px;">
-          <input class="fi" type="tel" id="registerPhone" placeholder="מספר טלפון" required style="flex: 1;">
-          <input class="fi" type="text" id="registerAddress" placeholder="כתובת מגורים" style="flex: 1;">
+        <div class="flex-row">
+          <input class="fi" type="tel" id="registerPhone" placeholder="מספר טלפון">
+          <input class="fi" type="text" id="registerAddress" placeholder="כתובת מגורים">
         </div>
 
         <div class="form-group" id="familyFields">
@@ -57,15 +57,15 @@
           </div>
         </div>
 
-        <div id="sitterFields" style="display: none; gap: 10px; margin-bottom: 16px;">
-          <input class="fi" type="number" id="registerAge" placeholder="גיל" min="14" max="99" style="flex: 1;">
-          <input class="fi" type="number" id="registerRate" placeholder="תעריף (₪)" min="10" max="300" style="flex: 1;">
-          <input class="fi" type="number" id="registerExp" placeholder="שנות ניסיון" min="0" max="50" style="flex: 1;">
+        <div id="sitterFields" class="hidden-fields">
+          <input class="fi" type="number" id="registerAge" placeholder="גיל" min="14" max="99">
+          <input class="fi" type="number" id="registerRate" placeholder="תעריף (₪)" min="10" max="300">
+          <input class="fi" type="number" id="registerExp" placeholder="שנות ניסיון" min="0" max="50">
         </div>
 
-        <div class="form-group" style="margin-top: 20px;">
+        <div class="form-group margin-top-20">
           <label class="custom-file-upload">
-            <input type="file" id="registerImg" accept="image/*" required>
+            <input type="file" id="registerImg" accept="image/*">
             <span>📷 העלאת תמונת פרופיל</span>
           </label>
           <div id="fileNameDisplay" class="file-name-indicator">לא נבחרה תמונה</div>
@@ -79,6 +79,14 @@
         כבר יש לך חשבון? <a href="login.html">התחברי כאן</a>
       </div>
 
+    </div>
+  </div>
+
+  <div id="msgModal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 id="modalTitle"></h3>
+      <p id="modalText"></p>
+      <button class="btn-submit" onclick="closeMsgModal()">הבנתי</button>
     </div>
   </div>
 
