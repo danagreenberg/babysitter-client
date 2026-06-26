@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>הפרופיל שלי – babysitter</title>
+  <link rel="stylesheet" href="style/common.css">
+  <link rel="stylesheet" href="style/register.css">
+  <link rel="stylesheet" href="style/profile.css">
+</head>
+<body>
+
+  <div class="register-wrapper">
+    <div class="register-card profile-card-wrap">
+      
+      <button id="editBtn" class="btn-edit-mode" onclick="toggleEditMode()">✏️ עריכה</button>
+
+      <div class="profile-avatar-container">
+        <img id="profImgDisplay" src="images/default-avatar.png" alt="תמונת פרופיל" class="profile-avatar">
+        
+        <label id="profImgLabel" class="custom-file-upload hide-element" style="padding: 8px 16px; font-size: 13px;">
+          <input type="file" id="profImgInput" accept="image/*">
+          <span>📷 החלפת תמונה</span>
+        </label>
+      </div>
+
+      <h1 class="register-title" id="profileNameTitle">טוען נתונים...</h1>
+      <p class="register-subtitle" id="profileRoleTitle">--</p>
+
+      <form id="profileForm">
+        
+        <div class="form-group">
+          <label>שם מלא:</label>
+          <input class="fi" type="text" id="profName" disabled>
+        </div>
+
+        <div class="form-group">
+          <label>אימייל (לא ניתן לשינוי):</label>
+          <input class="fi" type="email" id="profEmail" disabled>
+        </div>
+
+        <div class="flex-row">
+          <div class="fi-wrapper" style="flex: 1;">
+            <label>טלפון:</label>
+            <input class="fi" type="tel" id="profPhone" disabled>
+          </div>
+          <div class="fi-wrapper" style="flex: 1;">
+            <label>כתובת מגורים:</label>
+            <input class="fi" type="text" id="profAddress" disabled>
+          </div>
+        </div>
+
+        <div class="form-group hide-element" id="familyFields">
+          <label>מספר ילדים:</label>
+          <input class="fi" type="number" id="profChildren" disabled min="1" max="10">
+        </div>
+
+        <div id="sitterFields" class="hide-element">
+          <div class="flex-row">
+            <div class="fi-wrapper" style="flex: 1;">
+              <label>גיל:</label>
+              <input class="fi" type="number" id="profAge" disabled>
+            </div>
+            <div class="fi-wrapper" style="flex: 1;">
+              <label>תעריף לשעה (₪):</label>
+              <input class="fi" type="number" id="profRate" disabled>
+            </div>
+          </div>
+          <div class="form-group margin-top-20">
+            <label>שנות ניסיון:</label>
+            <input class="fi" type="number" id="profExp" disabled>
+          </div>
+        </div>
+
+        <button type="button" id="saveBtn" class="btn-submit hide-element" onclick="saveProfile()">💾 שמירת שינויים</button>
+      </form>
+
+    </div>
+  </div>
+
+  <div id="toast" class="toast-message"></div>
+
+  <script src="js/profile.js"></script>
+</body>
+</html>

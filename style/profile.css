@@ -1,0 +1,67 @@
+/* ================================================
+   profile.css
+   עיצוב ייחודי לעמוד הפרופיל ותמונת המשתמש
+   ================================================ */
+
+.profile-card-wrap {
+    position: relative;
+}
+
+.btn-edit-mode {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    color: #c4557a;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+.btn-edit-mode:hover { color: #8a3050; }
+.btn-edit-mode.cancel-mode { color: #888; }
+.btn-edit-mode.cancel-mode:hover { color: #555; }
+
+/* ── עיצוב תמונת הפרופיל ── */
+.profile-avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fdf0f7;
+    box-shadow: 0 4px 15px rgba(180, 80, 130, 0.2);
+    margin-bottom: 15px;
+}
+
+/* ── קלאסים להסתרה והצגה נקייה ── */
+.hide-element { display: none; }
+.show-block { display: block; }
+.show-flex-col { display: flex; flex-direction: column; }
+
+/* ── התראת Toast ── */
+.toast-message {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.toast-message.show-toast { display: block; }
