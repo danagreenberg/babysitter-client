@@ -72,7 +72,7 @@ async function login() {
     }
     
     // שמירת הטוקן בזיכרון של הדפדפן כדי שהמערכת תדע שאנחנו מחוברים
-    localStorage.setItem('token', data.token);
+  localStorage.setItem('token', data.data.token);
     
     // מעבר לעמוד הבית
     window.location.href = 'index.html';
