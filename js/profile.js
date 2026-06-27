@@ -3,7 +3,7 @@
    טעינה ועריכה של נתוני משתמש מלאים (כולל תמונה ותפקיד)
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 let currentUserRole = '';
 let isEditMode = false;
 

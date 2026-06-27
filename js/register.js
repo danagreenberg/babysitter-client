@@ -3,7 +3,7 @@
    לוגיקת הרשמה נקייה וללא alert
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
 function showModal(title, text) {
   document.getElementById('modalTitle').textContent = title;

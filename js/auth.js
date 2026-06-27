@@ -3,7 +3,7 @@
    מערכת הרשאות מרכזית - נטענת בכל עמוד באתר
    ================================================ */
 
-const BASE_API_URL = 'http://localhost:3000';
+const BASE_API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');

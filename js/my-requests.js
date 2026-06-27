@@ -3,7 +3,7 @@
    טעינת בקשות ממתינות לבייביסיטר ואישור/דחייה
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
 document.addEventListener('DOMContentLoaded', loadRequests);
 

@@ -3,7 +3,7 @@
    טוען את המשמרת הפעילה מה-DB: מפה, טיימר, סוללה, סיום
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 let battery = 75;
 
 window.addEventListener('load', init);

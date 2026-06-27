@@ -3,7 +3,7 @@
    ניהול התחברות וולידציית אימייל בזמן אמת
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
   const emailInput = document.getElementById('loginEmail');

@@ -3,7 +3,7 @@
    טוען את נתוני הבייביסיטר, מחשב מרחק מול API חיצוני ומנהל פעולות
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
 document.addEventListener('DOMContentLoaded', loadProfile);
 

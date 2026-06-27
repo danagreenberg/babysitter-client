@@ -3,7 +3,7 @@
    ניהול משמרות קרובות והיסטוריה (מותאם אוטומטית למשפחה/בייביסיטר)
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 let currentUserRole = ''; 
 let shiftToCancelId = null;
 

@@ -3,7 +3,7 @@
    טיפול בדירוג, כוכבים אינטראקטיביים ושליחה לשרת
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 let currentRating = 0;
 let sitterId = null;
 

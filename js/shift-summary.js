@@ -3,7 +3,7 @@
    חישוב זמן משמרת, תשלום דינמי, ונעילת המסך ללא CSS פנימי
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
 document.addEventListener('DOMContentLoaded', loadSummaryData);
 

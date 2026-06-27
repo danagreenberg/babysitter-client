@@ -3,7 +3,7 @@
    טוען בייביסיטרים מהשרת ומציג על מפה ורשימה
    ================================================ */
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
 let selId   = null;
 let map;
