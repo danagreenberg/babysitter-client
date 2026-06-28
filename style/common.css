@@ -19,6 +19,21 @@ body.role-family .only-sitter {
     display: none !important;
 }
 
+/* ── GLOBAL RESET ── */
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+body {
+  font-family: 'Heebo', Arial, sans-serif;
+  direction: rtl;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* ── NAVBAR ── */
 .navbar {
   background: white;
