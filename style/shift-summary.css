@@ -113,3 +113,10 @@
   font-size: 16px;
   margin-bottom: 30px;
 }
+
+.main-container {
+  width: 90%;
+  max-width: 650px; 
+  margin: 40px auto; 
+  flex: 1;  
+}
