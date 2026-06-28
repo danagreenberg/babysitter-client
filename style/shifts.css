@@ -127,7 +127,7 @@
 }
 
 .register-wrapper {
-  width: 90%;          /* תופס 90% מהרוחב */
-  max-width: 800px;    /* לא עובר 800 פיקסלים */
-  margin: 30px auto;   /* ממרכז את התוכן ונותן מרווח מה-Navbar */
+  width: 90%;         
+  max-width: 800px;    
+  margin: 30px auto;   
 }
