@@ -88,14 +88,15 @@ async function login() {
 
   const role = localStorage.getItem('role'); 
 
-  if (role === 'role-family') {
-    window.location.href = 'family-search.html';
-  } else if (role === 'role-sitter') {
-    window.location.href = 'my-requests.html';
-  } else {
-    window.location.href = 'index.html'; 
-  }
-  } catch (err) {
+    // בדיקה לפי הערכים האמיתיים שחוזרים מהשרת
+    if (role === 'family') {
+      window.location.href = 'family-search.html';
+    } else if (role === 'sitter') {
+      window.location.href = 'my-requests.html';
+    } else {
+      window.location.href = 'index.html'; 
+    }
+  } catch (err) { 
     showModal('שגיאת התחברות', err.message);
   }
 }
