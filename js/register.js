@@ -79,6 +79,34 @@ function toggleRoleFields() {
   }
 }
 
+/* ── הקטנת תמונה לפני העלאה (שומר על מסד קל ומהיר) ── */
+function resizeImage(file, maxSize) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > height && width > maxSize) {
+        height = Math.round(height * (maxSize / width));
+        width = maxSize;
+      } else if (height > maxSize) {
+        width = Math.round(width * (maxSize / height));
+        height = maxSize;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error('שגיאה בעיבוד התמונה')),
+        'image/jpeg',
+        0.8
+      );
+    };
+    img.onerror = () => reject(new Error('קובץ התמונה אינו תקין'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 async function register() {
   const selectedRole = document.querySelector('input[name="userRole"]:checked').value;
 
@@ -145,7 +173,9 @@ async function register() {
       formData.append('experience', document.getElementById('registerExp').value.trim());
     }
     
-    formData.append('img', fileInput.files[0]); 
+    // מקטינים את התמונה לפני השליחה כדי לשמור על מסד קל ומהיר
+    const resizedImg = await resizeImage(fileInput.files[0], 300);
+    formData.append('img', resizedImg, 'profile.jpg');
 
     const res = await fetch(`${API_URL}/api/auth/register`, {
       method: 'POST',
