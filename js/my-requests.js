@@ -35,7 +35,7 @@ async function loadRequests() {
       return;
     }
 
-    llistEl.innerHTML = pendingRequests.map(b => {
+    listEl.innerHTML = pendingRequests.map(b => {
   const bookingId = b._id || b.id;
   
   // הנתונים מגיעים עכשיו מתוך b.familyId כי השרת שולח את כל האובייקט
