@@ -84,7 +84,8 @@ async function login() {
     
     // שמירת הטוקן בזיכרון של הדפדפן כדי שהמערכת תדע שאנחנו מחוברים
   localStorage.setItem('token', data.data.token);
-    
+    localStorage.setItem('role', data.data.user.role);   // שמירת התפקיד למניעת הבהוב בנאבבר
+
     // מעבר לעמוד הבית
     window.location.href = 'index.html';
     

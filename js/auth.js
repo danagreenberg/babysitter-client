@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // החלת התפקיד מיידית מ-localStorage (מונע "קפיצה" של הקישורים עד שהשרת עונה)
+    const cachedRole = localStorage.getItem('role');
+    if (cachedRole) {
+        document.body.classList.add(`role-${cachedRole}`);
+    }
+
     try {
         // משיכת פרטי המשתמש מהשרת
         const res = await fetch(`${BASE_API_URL}/api/auth/me`, {
@@ -30,8 +36,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!data.success) throw new Error('Token invalid');
         
         const userRole = data.data.role; // 'family' או 'sitter'
-        
+        localStorage.setItem('role', userRole); // ריענון התפקיד השמור
+
         // 1. הזרקת התפקיד ל-Body כדי שה-CSS יעשה את הקסם ויסתיר/יציג אלמנטים
+        document.body.classList.remove('role-family', 'role-sitter');
         document.body.classList.add(`role-${userRole}`);
 
         // 2. אבטחת עמודים (Routing Guard)
@@ -46,3 +54,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'login.html';
     }
 });
+
+/* ── התנתקות ── */
+function logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    window.location.href = 'login.html';
+}
