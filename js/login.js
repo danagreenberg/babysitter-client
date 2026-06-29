@@ -84,13 +84,13 @@ async function login() {
     
     // שמירת הטוקן בזיכרון של הדפדפן כדי שהמערכת תדע שאנחנו מחוברים
   localStorage.setItem('token', data.data.token);
-    localStorage.setItem('userRole', data.data.user.userRole);   // שמירת התפקיד למניעת הבהוב בנאבבר
+    localStorage.setItem('role', data.data.user.role);   // שמירת התפקיד למניעת הבהוב בנאבבר
 
-  const userRole = localStorage.getItem('userRole'); 
+  const role = localStorage.getItem('role'); 
 
-  if (userRole === 'userRole-family') {
+  if (role === 'role-family') {
     window.location.href = 'family-search.html';
-  } else if (userRole === 'userRole-sitter') {
+  } else if (role === 'role-sitter') {
     window.location.href = 'my-requests.html';
   } else {
     window.location.href = 'index.html'; 
