@@ -86,8 +86,18 @@ async function login() {
   localStorage.setItem('token', data.data.token);
     localStorage.setItem('role', data.data.user.role);   // שמירת התפקיד למניעת הבהוב בנאבבר
 
-    // מעבר לעמוד הבית
-    window.location.href = 'index.html';
+  const role = localStorage.getItem('userRole'); 
+
+  if (role === 'family') {
+    // אם זו משפחה - נעביר לחיפוש בייביסיטר
+    window.location.href = 'family-search.html';
+  } else if (role === 'sitter') {
+    // אם זו בייביסיטר - נעביר לבקשות שלי
+    window.location.href = 'my-requests.html';
+  } else {
+    // גיבוי: אם משום מה אין תפקיד מוגדר, נחזיר לדף הראשי
+    window.location.href = 'index.html'; 
+  }
     
   } catch (err) {
     showModal('שגיאת התחברות', err.message);
