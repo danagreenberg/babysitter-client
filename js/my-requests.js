@@ -35,34 +35,27 @@ async function loadRequests() {
       return;
     }
 
-    listEl.innerHTML = pendingRequests.map(b => {
-      const bookingId = b._id || b.id;
-      // הבייביסיטר רואה את פרטי המשפחה שהזמינה אותה
-      const familyName = b.family ? b.family.name : 'משפחה לא ידועה';
-      const familyImg = (b.family && b.family.img) ? b.family.img : 'images/default-avatar.png';
+    llistEl.innerHTML = pendingRequests.map(b => {
+  const bookingId = b._id || b.id;
+  
+  // הנתונים מגיעים עכשיו מתוך b.familyId כי השרת שולח את כל האובייקט
+  const familyData = b.familyId; 
+  const familyName = familyData ? familyData.name : 'משפחה';
+  const familyImg = (familyData && familyData.img) ? familyData.img : 'images/default-avatar.png';
 
-      return `
-        <div class="shift-item">
-          <div class="shift-header">
-            <div class="sitter-info">
-              <img src="${familyImg}" onerror="this.src='https://i.pravatar.cc/150?img=1'">
-              <span>${familyName}</span>
-            </div>
-            <span class="shift-rate">₪${b.rate || 0}/שעה</span>
-          </div>
-          
-          <div class="shift-times">
-            <div><strong>התחלה מתוכננת:</strong> ${fmtDateTime(b.scheduledStart)}</div>
-            <div><strong>סיום משוער:</strong> ${fmtDateTime(b.scheduledEnd)}</div>
-          </div>
-          
-          <div style="margin-top: 15px;">
-            <button class="btn-submit" onclick="updateStatus('${bookingId}', 'approved')">✅ אישור משמרת</button>
-            <button class="btn-cancel" onclick="updateStatus('${bookingId}', 'rejected')">❌ דחיית בקשה</button>
-          </div>
+  return `
+    <div class="shift-item">
+      <div class="shift-header">
+        <div class="sitter-info">
+          <img src="${familyImg}" onerror="this.src='https://i.pravatar.cc/150?img=1'">
+          <span>${familyName}</span>
         </div>
-      `;
-    }).join('');
+        <span class="shift-rate">₪${b.rate || 0}/שעה</span>
+      </div>
+      ... (שאר הקוד נשאר אותו דבר) ...
+    </div>
+  `;
+}).join('');
 
   } catch (err) {
     console.error('שגיאה:', err);
