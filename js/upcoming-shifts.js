@@ -5,6 +5,7 @@
 
 const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 let currentUserRole = ''; 
+let currentUserId = ''; 
 let shiftToCancelId = null;
 
 document.addEventListener('DOMContentLoaded', initShiftsPage);
@@ -44,6 +45,7 @@ async function initShiftsPage() {
     
     if (userData.success && userData.data) {
       currentUserRole = userData.data.role;
+      currentUserId = userData.data._id || userData.data.id;
     }
 
     await loadAllShifts(token);
