@@ -52,7 +52,15 @@ async function loadRequests() {
         </div>
         <span class="shift-rate">₪${b.rate || 0}/שעה</span>
       </div>
-      ... (שאר הקוד נשאר אותו דבר) ...
+          <div class="shift-times">
+            <div><strong>התחלה מתוכננת:</strong> ${fmtDateTime(b.scheduledStart)}</div>
+            <div><strong>סיום משוער:</strong> ${fmtDateTime(b.scheduledEnd)}</div>
+          </div>
+          
+          <div style="margin-top: 15px;">
+            <button class="btn-submit" onclick="updateStatus('${bookingId}', 'approved')">✅ אישור משמרת</button>
+            <button class="btn-cancel" onclick="updateStatus('${bookingId}', 'rejected')">❌ דחיית בקשה</button>
+          </div>
     </div>
   `;
 }).join('');
