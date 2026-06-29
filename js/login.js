@@ -86,7 +86,7 @@ async function login() {
   localStorage.setItem('token', data.data.token);
     localStorage.setItem('role', data.data.user.role);   // שמירת התפקיד למניעת הבהוב בנאבבר
 
-  const role = localStorage.getItem('userRole'); 
+  const role = localStorage.getItem('role'); 
 
   if (role === 'family') {
     // אם זו משפחה - נעביר לחיפוש בייביסיטר
