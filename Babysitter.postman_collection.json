@@ -1,13 +1,13 @@
 {
   "info": {
     "name": "Babysitter API",
-    "description": "אוסף בקשות לכל ה-routes של שרת ה-Babysitter (Node.js + Express). הגדירו משתנה סביבה baseUrl=http://localhost:3000 ו-token (מתקבל מ-Register/Login).",
+    "description": "אוסף בקשות לכל ה-routes של שרת ה-Babysitter (Node.js + Express). baseUrl כבר מוגדר לשרת החי ב-Render. הטוקן נשמר אוטומטית לאחר Login (ראו סקריפט בבקשת Login).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000"
+      "value": "https://babysitter-server-dc0e.onrender.com"
     },
     {
       "key": "token",
@@ -126,12 +126,24 @@
                 "login"
               ]
             },
-            "description": "התחברות. מחזיר user + token.",
+            "description": "התחברות. מחזיר user + token. הטוקן נשמר אוטומטית למשתנה token דרך הסקריפט.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"family@example.com\",\n  \"password\": \"0501112222\"\n}"
             }
           },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.success) { pm.collectionVariables.set('token', data.data.token); }"
+                ]
+              }
+            }
+          ],
           "response": []
         },
         {
@@ -185,6 +197,39 @@
               ]
             },
             "description": "פרטי המשתמש המחובר. דורש Authorization: Bearer token."
+          },
+          "response": []
+        },
+        {
+          "name": "Update details (protected)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/updatedetails",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "updatedetails"
+              ]
+            },
+            "description": "עדכון פרטי המשתמש המחובר (שם, טלפון, כתובת; לבייביסיטר גם גיל/תעריף/ניסיון). דורש התחברות.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"0501234567\",\n  \"address\": \"רחוב חדש 5, תל אביב\"\n}"
+            }
           },
           "response": []
         }
@@ -721,10 +766,10 @@
                 "reviews"
               ]
             },
-            "description": "הוספת ביקורת. דורש התחברות.",
+            "description": "הוספת ביקורת לבייביסיטר. דורש התחברות (familyId נלקח מהטוקן אוטומטית). יש להחליף את sitterId במזהה אמיתי מתוך List sitters.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"sitterId\": \"sit-001\",\n  \"familyId\": \"fam-001\",\n  \"bookingId\": \"bk-001\",\n  \"ratingSitter\": 5,\n  \"ratingFamily\": 5,\n  \"commentSitter\": \"מצוין!\",\n  \"commentFamily\": \"משפחה נהדרת\"\n}"
+              "raw": "{\n  \"sitterId\": \"<מזהה הבייביסיטר>\",\n  \"rating\": 5,\n  \"text\": \"בייביסיטרית מעולה, מומלצת בחום!\"\n}"
             }
           },
           "response": []
