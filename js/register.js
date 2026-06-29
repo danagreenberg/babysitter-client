@@ -107,6 +107,21 @@ function resizeImage(file, maxSize) {
   });
 }
 
+async function getCoordsFromAddress(address) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data && data.length > 0) {
+    return {
+      lat: parseFloat(data[0].lat),
+      lng: parseFloat(data[0].lon)
+    };
+  } else {
+    throw new Error('לא נמצאו קואורדינטות עבור כתובת זו');
+  }
+}
+
 async function register() {
   const selectedRole = document.querySelector('input[name="userRole"]:checked').value;
 
@@ -156,14 +171,23 @@ async function register() {
     return;
   }
 
-  try {
+  try {try {
+    const address = document.getElementById('registerAddress').value.trim();
+    
+    // 1. נסיון לקבל קואורדינטות מהכתובת לפני שממשיכים
+    const coords = await getCoordsFromAddress(address);
+
     const formData = new FormData();
     formData.append('role', selectedRole); 
     formData.append('name', document.getElementById('registerName').value.trim());
     formData.append('email', emailInput.value.trim());
     formData.append('password', document.getElementById('registerPass').value.trim());
     formData.append('phone', document.getElementById('registerPhone').value.trim());
-    formData.append('address', document.getElementById('registerAddress').value.trim());
+    formData.append('address', address);
+    
+    // 2. הוספת הקואורדינטות שהתקבלו מה-API לטופס
+    formData.append('lat', coords.lat);
+    formData.append('lng', coords.lng);
     
     if (selectedRole === 'family') {
       formData.append('children', document.getElementById('childCount').textContent);
@@ -185,7 +209,6 @@ async function register() {
     const data = await res.json();
 
     if (!res.ok || !data.success) {
-      // אם השרת מחזיר שגיאה (כמו אימייל קיים או חסר נתון)
       throw new Error(data.error || 'שגיאה בתהליך ההרשמה מול השרת');
     }
 
@@ -195,6 +218,10 @@ async function register() {
     }, 2000);
 
   } catch (err) {
+    console.error('שגיאת הרשמה:', err);
+    showModal('שגיאה בהרשמה', err.message);
+  }
+} catch (err) {
     console.error('שגיאת הרשמה:', err);
     showModal('שגיאה בהרשמה', err.message);
   }
