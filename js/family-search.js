@@ -30,7 +30,7 @@ async function loadSitters() {
     refresh();
 
   } catch (err) {
-    showError('שגיאה בטעינת הנתונים. ודא שהשרת פועל על פורט 3000.');
+    showError('שגיאה בטעינת הנתונים מהשרת. נסו לרענן את הדף בעוד רגע.');
     console.error('API error:', err);
   }
 }

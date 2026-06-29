@@ -17,7 +17,7 @@ async function init() {
     setupShift(data.data);
   } catch (err) {
     console.error('shift error:', err);
-    showToast('⚠️ שגיאה בטעינת המשמרת. ודא שהשרת פעיל על פורט 3000.');
+    showToast('⚠️ שגיאה בטעינת המשמרת מהשרת. נסו לרענן את הדף בעוד רגע.');
     initMap(32.0853, 34.8764, null);
   }
 }
