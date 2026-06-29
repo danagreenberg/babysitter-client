@@ -166,12 +166,20 @@ function closeConfirmModal() {
 }
 
 async function executeCancel() {
-  closeConfirmModal();
-  if (!shiftToCancelId) return;
+  // 1. קודם שומרים את ה-ID בצד לפני שסוגרים את המודאל!
+  const idToCancel = shiftToCancelId; 
+  
+  // 2. עכשיו אפשר לסגור את המודאל בבטחה (זה יאפס את המשתנה המקורי, אבל שלנו שמור)
+  closeConfirmModal(); 
+  
+  // 3. בודקים את המשתנה השמור
+  if (!idToCancel) return; 
   
   try {
     const token = localStorage.getItem('token');
-    const res = await fetch(`${API_URL}/api/bookings/${shiftToCancelId}`, {
+    
+    // 4. משתמשים במשתנה השמור בתוך ה-fetch
+    const res = await fetch(`${API_URL}/api/bookings/${idToCancel}`, { 
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -180,9 +188,10 @@ async function executeCancel() {
     if (!data.success) throw new Error(data.error);
     
     showToast('✅ המשמרת בוטלה בהצלחה');
-    initShiftsPage(); // רענון מהיר
+    initShiftsPage(); // רענון הרשימה כדי להעלים את המשמרת שבוטלה
     
   } catch (err) {
+    console.error('שגיאה בביטול:', err);
     showToast('❌ שגיאה בביטול: ' + err.message);
   }
 }
