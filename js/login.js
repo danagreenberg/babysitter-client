@@ -88,17 +88,13 @@ async function login() {
 
   const role = localStorage.getItem('role'); 
 
-  if (role === 'family') {
-    // אם זו משפחה - נעביר לחיפוש בייביסיטר
+  if (role === 'role-family') {
     window.location.href = 'family-search.html';
-  } else if (role === 'sitter') {
-    // אם זו בייביסיטר - נעביר לבקשות שלי
+  } else if (role === 'role-sitter') {
     window.location.href = 'my-requests.html';
   } else {
-    // גיבוי: אם משום מה אין תפקיד מוגדר, נחזיר לדף הראשי
     window.location.href = 'index.html'; 
   }
-    
   } catch (err) {
     showModal('שגיאת התחברות', err.message);
   }
