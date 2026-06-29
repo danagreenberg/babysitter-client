@@ -8,7 +8,8 @@ const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 document.addEventListener('DOMContentLoaded', loadSummaryData);
 
 async function loadSummaryData() {
-  const sitterId = localStorage.getItem('currentSitterId');
+  // המשתנה הזה בעצם מכיל את ה-ID של ההזמנה (Booking)
+  const bookingId = localStorage.getItem('currentSitterId'); 
   const startTimeIso = localStorage.getItem('actualStartTime');
   const endTimeIso = localStorage.getItem('actualEndTime');
 
@@ -16,7 +17,7 @@ async function loadSummaryData() {
   const emptySummary = document.getElementById('emptySummary');
 
   // אם חסר מידע למשמרת - נציג את הסטייט הריק
-  if (!sitterId || !endTimeIso || !startTimeIso) {
+  if (!bookingId || !endTimeIso || !startTimeIso) {
     summaryContent.classList.add('hide-element');
     emptySummary.classList.remove('hide-element');
     return;
@@ -27,12 +28,17 @@ async function loadSummaryData() {
   summaryContent.classList.remove('hide-element');
 
   try {
-    const res = await fetch(`${API_URL}/api/sitters`);
+    const token = localStorage.getItem('token');
+    
+    // מושכים את ההזמנה הספציפית מהשרת במקום את כל הבייביסיטריות
+    const res = await fetch(`${API_URL}/api/bookings/${bookingId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
     const data = await res.json();
-    if (!data.success) throw new Error(data.error);
+    if (!data.success) throw new Error(data.error || 'הזמנה לא נמצאה');
 
-    const sitter = data.data.find(s => s.id === sitterId || s._id === sitterId);
-    if (!sitter) throw new Error('בייביסיטר לא נמצאה במסד הנתונים');
+    const booking = data.data;
 
     const start = new Date(startTimeIso);
     const end = new Date(endTimeIso);
@@ -45,8 +51,8 @@ async function loadSummaryData() {
     
     const durationText = hours > 0 ? `${hours} שעות ו-${mins} דקות` : `${mins} דקות`;
     
-    // חישוב תשלום
-    const rate = Number(sitter.rate) || 0;
+    // חישוב תשלום ישירות מהתעריף ששמור בהזמנה
+    const rate = Number(booking.rate) || 0;
     const totalCost = Math.round((diffMins / 60) * rate);
 
     // הזרקה ל-DOM
@@ -57,8 +63,10 @@ async function loadSummaryData() {
     document.getElementById('shiftRateSumm').textContent = `₪${rate}/שעה`;
     document.getElementById('shiftTotalSumm').textContent = `₪${totalCost}`;
 
-    if (sitter.img) {
-      document.getElementById('sitterImgSumm').src = sitter.img;
+    // הזרקת תמונה (משתמש בתמונה מההזמנה או ברירת מחדל)
+    const imgEl = document.getElementById('sitterImgSumm');
+    if (imgEl) {
+       imgEl.src = (booking.sitter && booking.sitter.img) ? booking.sitter.img : 'https://i.pravatar.cc/150?img=1';
     }
 
   } catch (err) {
