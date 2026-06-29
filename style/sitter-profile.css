@@ -285,3 +285,20 @@ input[type="time"].fi {
 .modal-cancel:hover  { background: #ecd8e2; }
 .modal-confirm { background: #c4557a; color: #fff; }
 .modal-confirm:hover { background: #a83d62; }
+
+/* ── כלי עזר (במקום inline style) ── */
+.is-hidden { display: none; }
+.flex-1 { flex: 1; }
+.form-row { display: flex; gap: 10px; }
+.profile-loader { display: none; justify-content: center; padding: 40px; font-size: 24px; }
+.distance-box {
+  display: none;
+  background: #fff0f6;
+  color: #8a3050;
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin-top: 15px;
+  font-size: 15px;
+  text-align: center;
+}
+.reviews-loading { text-align: center; color: #888; width: 100%; }

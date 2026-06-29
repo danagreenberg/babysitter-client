@@ -5,6 +5,17 @@
 
 const API_URL = 'https://babysitter-server-dc0e.onrender.com';
 
+/* ── מודאל הודעות (במקום alert) ── */
+function showModal(title, text) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalText').textContent = text;
+  document.getElementById('msgModal').classList.add('show');
+}
+
+function closeMsgModal() {
+  document.getElementById('msgModal').classList.remove('show');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const emailInput = document.getElementById('loginEmail');
   const emailError = document.getElementById('emailError');
@@ -45,14 +56,14 @@ async function login() {
 
   // 1. וידוא שהשדות לא ריקים
   if (!email || !pass) {
-    alert('נא למלא אימייל וסיסמה');
+    showModal('חסרים פרטים', 'נא למלא אימייל וסיסמה');
     return;
   }
 
   // 2. בדיקה אחרונה שהאימייל באמת תקין לפני שפונים לשרת
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!emailRegex.test(email)) {
-     alert('יש לתקן את כתובת האימייל לפני ההתחברות');
+     showModal('שגיאה', 'יש לתקן את כתובת האימייל לפני ההתחברות');
      emailInput.focus(); // מקפיץ את הסמן חזרה לשדה האימייל
      return;
   }
@@ -78,7 +89,6 @@ async function login() {
     window.location.href = 'index.html';
     
   } catch (err) {
-    console.error('שגיאת התחברות:', err);
-    alert(err.message);
+    showModal('שגיאת התחברות', err.message);
   }
 }

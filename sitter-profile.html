@@ -35,19 +35,19 @@
             <div>גיל: <span id="profAge">--</span></div>
             <div>תעריף לשעה: ₪<span id="profRate">--</span></div>
             <div>ניסיון: <span id="profExp">--</span> שנים</div>
-            <div id="profileLoader" style="display: none; justify-content: center; padding: 40px; font-size: 24px;">
+            <div id="profileLoader" class="profile-loader">
               ⏳ טוען נתונים...
             </div>
-            <div id="profDistance" style="display: none; background: #fff0f6; color: #8a3050; padding: 10px 15px; border-radius: 12px; margin-top: 15px; font-size: 15px; text-align: center;">
+            <div id="profDistance" class="distance-box">
   </div>
           </div>
           
-          <div id="profVerified" class="verified-badge" style="display: none;">Verified ✔</div>
+          <div id="profVerified" class="verified-badge is-hidden">Verified ✔</div>
           
           <h2 class="reviews-title">ביקורות:</h2>
           
           <div id="profReviews" class="reviews-container">
-            <div style="text-align: center; color: #888; width: 100%;">טוען ביקורות...</div>
+            <div class="reviews-loading">טוען ביקורות...</div>
           </div>
         </div>
 
@@ -71,12 +71,12 @@
         <label>תאריך:</label>
         <input type="date" id="bookDate" class="fi">
       </div>
-      <div class="form-group" style="display: flex; gap: 10px;">
-        <div style="flex: 1;">
+      <div class="form-group form-row">
+        <div class="flex-1">
           <label>שעת התחלה:</label>
           <input type="time" id="bookStartTime" class="fi">
         </div>
-        <div style="flex: 1;">
+        <div class="flex-1">
           <label>שעת סיום:</label>
           <input type="time" id="bookEndTime" class="fi">
         </div>

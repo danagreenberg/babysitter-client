@@ -15,8 +15,8 @@ async function initRatingPage() {
   sitterId = urlParams.get('id');
 
   if (!sitterId) {
-    alert('שגיאה: לא נבחרה בייביסיטר לדירוג.');
-    window.location.href = 'family-search.html';
+    showToast('❌ לא נבחרה בייביסיטר לדירוג');
+    setTimeout(() => { window.location.href = 'family-search.html'; }, 1800);
     return;
   }
 
