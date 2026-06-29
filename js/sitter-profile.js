@@ -46,7 +46,16 @@ async function loadProfile() {
       verifiedBadge.style.display = 'none';
     }
 
-    renderReviews(sitter.reviews);
+    // טעינת ביקורות הבייביסיטר (נתיב נפרד)
+    try {
+      const sid = sitter._id || sitter.id;
+      const revRes = await fetch(`${API_URL}/api/reviews/sitter/${sid}`);
+      const revData = await revRes.json();
+      renderReviews(revData.success ? revData.data : []);
+    } catch (err) {
+      console.error('שגיאה בטעינת ביקורות:', err);
+      renderReviews([]);
+    }
 
     // --- קריאה ל-API חיצוני לחישוב מרחק בצורה דינמית ---
     const token = localStorage.getItem('token');
@@ -133,7 +142,7 @@ function renderReviews(reviews) {
       `;
     }).join('');
   } else {
-    reviewsContainer.innerHTML = '<div style="width: 100%; text-align: center; color: #888; padding: 20px 0;">אין עדיין ביקורות לבייביסיטר זו.</div>';
+    reviewsContainer.innerHTML = '<div class="reviews-loading">אין עדיין ביקורות לבייביסיטר זו.</div>';
   }
 }
 

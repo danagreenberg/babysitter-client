@@ -74,14 +74,15 @@ async function submitReview() {
     btn.disabled = true;
     btn.textContent = 'שולח...';
 
-    // קריאת POST לשרת (תוודאי שיש לך נתיב כזה ב-Node.js!)
-    const res = await fetch(`${API_URL}/api/sitters/${sitterId}/reviews`, {
+    // שליחת הביקורת לשרת
+    const res = await fetch(`${API_URL}/api/reviews`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        sitterId: sitterId,
         rating: currentRating,
         text: reviewText
       })
