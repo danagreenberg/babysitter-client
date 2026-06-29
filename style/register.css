@@ -11,8 +11,9 @@ body {
   direction: rtl;
   background: #fdf8fb;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;   /* יישור לראש העמוד — מונע "קפיצה" כשהתוכן נטען */
   min-height: 100vh;
 }
 
