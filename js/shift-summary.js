@@ -79,17 +79,39 @@ async function loadSummaryData() {
    פעולות תשלום וסיום (זמין למשפחות בלבד בזכות ה-CSS)
    ================================================ */
 
-function payAndFinish(method) {
-  if (method === 'bit') {
-    showToast('📱 מעביר לתשלום ב-Bit...');
-  } else {
-    showToast('💵 התשלום התקבל בהצלחה');
+async function payAndFinish(method) {
+  try {
+    const token = localStorage.getItem('token');
+    const bookingId = localStorage.getItem('currentSitterId'); // זה ה-ID של ההזמנה ששמרנו
+
+    // מעדכנים את השרת שהמשמרת הסתיימה!
+    const res = await fetch(`${API_URL}/api/bookings/${bookingId}`, {
+      method: 'PUT',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: 'completed' }) // משנים את הסטטוס
+    });
+
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+
+    if (method === 'bit') {
+      showToast('📱 מעביר לתשלום ב-Bit...');
+    } else {
+      showToast('💵 התשלום התקבל בהצלחה');
+    }
+    
+    // אחרי שנייה וחצי עוברים לדירוג
+    setTimeout(() => {
+      goToRating();
+    }, 1500);
+
+  } catch (err) {
+    console.error('שגיאה בעדכון סיום המשמרת:', err);
+    showToast('❌ שגיאה בסיום המשמרת');
   }
-  
-  // אחרי שנייה וחצי עוברים לדירוג
-  setTimeout(() => {
-    goToRating();
-  }, 1500);
 }
 
 function goToRating() {

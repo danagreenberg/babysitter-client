@@ -68,7 +68,7 @@ async function loadAllShifts(token) {
     const shifts = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : []);
 
     // סינון לקטגוריות
-    const pendingShifts = shifts.filter(s => s.status === 'pending');
+    const pendingShifts = shifts.filter(s => s.status === 'requested');
     const upcomingShifts = shifts.filter(s => s.status === 'approved' || s.status === 'confirmed');
     const completedShifts = shifts.filter(s => s.status === 'completed');
 
@@ -180,10 +180,14 @@ async function executeCancel() {
   try {
     const token = localStorage.getItem('token');
     
-    // 4. משתמשים במשתנה השמור בתוך ה-fetch
+  // 4. משתמשים במשתנה השמור בתוך ה-fetch
     const res = await fetch(`${API_URL}/api/bookings/${idToCancel}`, { 
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+      method: 'PUT', // שינינו ל-PUT
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json' // הוספנו את זה כדי שהשרת ידע לקרוא את הסטטוס
+      },
+      body: JSON.stringify({ status: 'canceled' }) // העדכון שמשנה את הסטטוס למבוטל!
     });
     
     const data = await res.json();
