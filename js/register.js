@@ -171,7 +171,7 @@ async function register() {
     return;
   }
 
-  try {try {
+  try {
     const address = document.getElementById('registerAddress').value.trim();
     
     // 1. נסיון לקבל קואורדינטות מהכתובת לפני שממשיכים
@@ -218,10 +218,6 @@ async function register() {
     }, 2000);
 
   } catch (err) {
-    console.error('שגיאת הרשמה:', err);
-    showModal('שגיאה בהרשמה', err.message);
-  }
-} catch (err) {
     console.error('שגיאת הרשמה:', err);
     showModal('שגיאה בהרשמה', err.message);
   }
