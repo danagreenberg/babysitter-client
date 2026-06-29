@@ -108,17 +108,23 @@ function resizeImage(file, maxSize) {
 }
 
 async function getCoordsFromAddress(address) {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+  // מוסיפים 'Israel' כדי לעזור ל-API להתמקד במיקום הנכון
+  const query = `${address}, Israel`; 
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
+  
   const response = await fetch(url);
   const data = await response.json();
-
+  
+  // בדיקה אם הגיעו תוצאות
   if (data && data.length > 0) {
     return {
       lat: parseFloat(data[0].lat),
       lng: parseFloat(data[0].lon)
     };
   } else {
-    throw new Error('לא נמצאו קואורדינטות עבור כתובת זו');
+    // אם לא מצא, ננסה להחזיר ערך ברירת מחדל או לזרוק שגיאה ברורה
+    console.error("לא נמצאו קואורדינטות לכתובת:", address);
+    throw new Error('לא נמצאה הכתובת במפות, נסי להוסיף עיר או מיקוד.');
   }
 }
 
