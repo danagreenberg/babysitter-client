@@ -27,8 +27,8 @@ async function loadRequests() {
 
     const shifts = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : []);
     
-    // סינון: רק בקשות שממתינות לאישור
-    const pendingRequests = shifts.filter(s => s.status === 'pending');
+    // סינון: רק בקשות שממתינות לאישור  
+    const pendingRequests = shifts.filter(s => s.status === 'pending' || s.status === 'requested');
 
     if (pendingRequests.length === 0) {
       listEl.innerHTML = '<div class="empty-state">אין לך כרגע בקשות חדשות שממתינות לאישור.</div>';
