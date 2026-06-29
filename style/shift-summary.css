@@ -113,6 +113,49 @@
   font-size: 16px;
   margin-bottom: 30px;
 }
+/* ================================================
+   עיצוב כפתורים (היה חסר בקובץ)
+   ================================================ */
+
+.actions-row {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap; 
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background: #c4557a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: #a84566;
+}
+
+.btn-secondary {
+  background: white;
+  color: #c4557a;
+  border: 1.5px solid #c4557a;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #fff0f6;
+}
 
 .main-container {
   width: 90%;
